@@ -1,0 +1,96 @@
+@model CloudSecOps.ViewModels.IncidentDetailsViewModel
+
+@{
+    ViewData["Title"] = "Incident Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Incident Details</h1>
+        <p class="text-muted mb-0">View incident information and investigation notes.</p>
+    </div>
+
+    <a asp-action="Index" class="btn btn-secondary">Back to Incidents</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        Incident Information
+    </div>
+
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Title</dt>
+            <dd class="col-sm-9">@Model.Incident.Title</dd>
+
+            <dt class="col-sm-3">Category</dt>
+            <dd class="col-sm-9">@Model.Incident.Category</dd>
+
+            <dt class="col-sm-3">Severity</dt>
+            <dd class="col-sm-9">@Model.Incident.Severity</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">@Model.Incident.Status</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Incident.Description</dd>
+
+            <dt class="col-sm-3">Reported By</dt>
+            <dd class="col-sm-9">@Model.Incident.ReportedBy</dd>
+
+            <dt class="col-sm-3">Created At</dt>
+            <dd class="col-sm-9">@Model.Incident.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        Add Investigation Note
+    </div>
+
+    <div class="card-body">
+        <form asp-action="AddNote" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="incidentId" value="@Model.Incident.Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Investigation Note</label>
+                <textarea name="noteText" class="form-control" rows="4" placeholder="Example: Checked login logs and found unusual access attempt." required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Added By</label>
+                <input name="addedBy" class="form-control" placeholder="Example: analyst@company.com" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Note</button>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        Investigation Notes
+    </div>
+
+    <div class="card-body">
+        @if (!Model.InvestigationNotes.Any())
+        {
+            <p class="text-muted mb-0">No investigation notes have been added yet.</p>
+        }
+        else
+        {
+            @foreach (var note in Model.InvestigationNotes)
+            {
+                <div class="border rounded p-3 mb-3">
+                    <p class="mb-2">@note.NoteText</p>
+                    <small class="text-muted">
+                        Added by @note.AddedBy on @note.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC
+                    </small>
+                </div>
+            }
+        }
+    </div>
+</div>
