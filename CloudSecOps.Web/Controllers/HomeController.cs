@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using CloudSecOps.Models;
+using CloudSecOps.Web.Models;
 
-namespace CloudSecOps.Controllers;
+namespace CloudSecOps.Web.Controllers;
 
 public class HomeController : Controller
 {

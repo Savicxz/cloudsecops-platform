@@ -1,4 +1,4 @@
-namespace CloudSecOps.Models;
+namespace CloudSecOps.Web.Models;
 
 public class ErrorViewModel
 {
