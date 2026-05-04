@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: cloudsecops-postgres
+    environment:
+      POSTGRES_DB: cloudsecops_db
+      POSTGRES_USER: cloudsecops_admin
+      POSTGRES_PASSWORD: cloudsecops_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - cloudsecops_pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: cloudsecops-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@cloudsecops.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_ALLOW_SPECIAL_EMAIL_DOMAINS: "['local']"
+    ports:
+      - "5051:80"
+    depends_on:
+      - postgres
+
+volumes:
+  cloudsecops_pgdata:
