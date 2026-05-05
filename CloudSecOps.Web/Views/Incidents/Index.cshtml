@@ -1,0 +1,16 @@
+@model IReadOnlyList<CloudSecOps.Web.ViewModels.Incidents.IncidentListItemViewModel>
+
+@{
+    ViewData["Title"] = "Incidents";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">Incidents</h1>
+        <p class="text-muted mb-0">Coordinate defensive incident reporting, triage, assignment, and closure.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">Report Incident</a>
+</div>
+
+@* TODO: Add role-filtered incident queues and status workflows. *@
+<div class="card"><div class="card-body"><table class="table table-hover mb-0"><thead><tr><th>Title</th><th>Category</th><th>Severity</th><th>Status</th><th>Created</th></tr></thead><tbody><tr><td colspan="5" class="text-muted">No incidents yet. Placeholder list for Task 1.</td></tr></tbody></table></div></div>
