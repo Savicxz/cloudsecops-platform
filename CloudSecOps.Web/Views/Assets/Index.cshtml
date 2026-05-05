@@ -1,0 +1,16 @@
+@model IReadOnlyList<CloudSecOps.Web.ViewModels.Assets.AssetListItemViewModel>
+
+@{
+    ViewData["Title"] = "Assets";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">Assets</h1>
+        <p class="text-muted mb-0">Track protected systems, owners, environments, and criticality.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">Add Asset</a>
+</div>
+
+@* TODO: Connect table to EF-backed asset inventory. *@
+<div class="card"><div class="card-body"><table class="table table-hover mb-0"><thead><tr><th>Name</th><th>Type</th><th>Environment</th><th>Criticality</th><th>Status</th></tr></thead><tbody><tr><td colspan="5" class="text-muted">No assets yet. Placeholder list for Task 1.</td></tr></tbody></table></div></div>

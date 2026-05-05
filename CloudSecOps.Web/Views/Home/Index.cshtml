@@ -1,8 +1,12 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="p-4 p-md-5 bg-light border rounded-3">
+    <p class="text-uppercase text-secondary fw-semibold small mb-2">Defensive security operations</p>
+    <h1 class="display-6 fw-bold">CloudSecOps: Cloud-Based Security Operations and Incident Response Platform</h1>
+    <p class="lead mb-4">
+        A Task 1 ASP.NET Core MVC skeleton for incident response, vulnerability tracking, asset inventory, evidence files, audit logs, and role-based dashboards.
+    </p>
+    <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Open Dashboard</a>
+</section>

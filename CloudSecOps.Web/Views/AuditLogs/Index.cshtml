@@ -1,0 +1,10 @@
+@model IReadOnlyList<CloudSecOps.Web.ViewModels.AuditLogs.AuditLogListItemViewModel>
+
+@{
+    ViewData["Title"] = "Audit Logs";
+}
+
+<h1 class="h3">Audit Logs</h1>
+<p class="text-muted">Read-only security history for administrative and auditor review.</p>
+@* TODO: Persist user actions and add filtering/export controls. *@
+<div class="card"><div class="card-body"><table class="table table-hover mb-0"><thead><tr><th>Action</th><th>Entity</th><th>User</th><th>Timestamp</th></tr></thead><tbody><tr><td colspan="4" class="text-muted">No audit entries yet. Placeholder list for Task 1.</td></tr></tbody></table></div></div>
