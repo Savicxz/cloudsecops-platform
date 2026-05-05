@@ -1,0 +1,56 @@
+@model List<CloudSecOps.Web.Models.IncidentReport>
+
+@{
+    ViewData["Title"] = "My Incident Reports";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>My Incident Reports</h2>
+            <p class="text-muted">View and track the security incidents you have reported.</p>
+        </div>
+
+        <a class="btn btn-primary" asp-controller="IncidentReports" asp-action="Create">
+            Report New Incident
+        </a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Affected Asset</th>
+                <th>Status</th>
+                <th>Reported Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var report in Model)
+            {
+                <tr>
+                    <td>@report.Title</td>
+                    <td>@report.Category</td>
+                    <td>@report.Severity</td>
+                    <td>@report.AffectedAsset</td>
+                    <td>
+                        <span class="badge bg-warning text-dark">@report.Status</span>
+                    </td>
+                    <td>@report.CreatedAt.ToString("dd MMM yyyy")</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary"
+                           asp-controller="IncidentReports"
+                           asp-action="Details"
+                           asp-route-id="@report.Id">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
