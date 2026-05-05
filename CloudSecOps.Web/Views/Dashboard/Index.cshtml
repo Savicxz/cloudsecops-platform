@@ -1,0 +1,27 @@
+@model CloudSecOps.Web.ViewModels.Dashboard.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Security Operations Dashboard</h1>
+        <p class="text-muted mb-0">Role-based overview for defensive monitoring and response coordination.</p>
+    </div>
+</div>
+
+@* TODO: Replace placeholder metrics with live service data and role-specific widgets. *@
+<div class="row g-3">
+    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Open incidents</p><h2>@Model.OpenIncidents</h2></div></div></div>
+    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Critical vulnerabilities</p><h2>@Model.CriticalVulnerabilities</h2></div></div></div>
+    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Active assets</p><h2>@Model.ActiveAssets</h2></div></div></div>
+    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Recent audit events</p><h2>@Model.RecentAuditEvents</h2></div></div></div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h2 class="h5">Operational queue</h2>
+        <p class="text-muted mb-0">TODO: show assigned incidents, overdue vulnerabilities, and high-priority asset risks.</p>
+    </div>
+</div>
