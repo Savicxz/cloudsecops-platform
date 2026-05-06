@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize(Roles = "Analyst,Manager,Admin,Auditor")]
+[Authorize(Roles = "SecurityAnalyst,Manager,Administrator,Auditor")]
 public class VulnerabilitiesController : Controller
 {
     private readonly IVulnerabilityService _vulnerabilityService;

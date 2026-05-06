@@ -1,14 +1,14 @@
 using CloudSecOps.Web.Data;
-using CloudSecOps.Web.Models;
+using CloudSecOps.Web.Models.Incidents;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloudSecOps.Web.Controllers
 {
   public class IncidentReportsController : Controller{
-    private readonly ApplicationDbContext _context;
+    private readonly AppDbContext _context;
 
-    public IncidentReportsController(ApplicationDbContext context){
+    public IncidentReportsController(AppDbContext context){
       _context = context;
     }
 
