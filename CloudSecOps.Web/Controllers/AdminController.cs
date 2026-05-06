@@ -15,6 +15,7 @@ public class AdminController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IIncidentService _incidentService;
+    private readonly IIncidentReportService _incidentReportService;
     private readonly IAssetService _assetService;
     private readonly IVulnerabilityService _vulnerabilityService;
     private readonly IAuditLogService _auditLogService;
@@ -23,6 +24,7 @@ public class AdminController : Controller
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IIncidentService incidentService,
+        IIncidentReportService incidentReportService,
         IAssetService assetService,
         IVulnerabilityService vulnerabilityService,
         IAuditLogService auditLogService)
@@ -30,6 +32,7 @@ public class AdminController : Controller
         _userManager = userManager;
         _roleManager = roleManager;
         _incidentService = incidentService;
+        _incidentReportService = incidentReportService;
         _assetService = assetService;
         _vulnerabilityService = vulnerabilityService;
         _auditLogService = auditLogService;
@@ -42,8 +45,10 @@ public class AdminController : Controller
             UserCount = await _userManager.Users.CountAsync(),
             RoleCount = await _roleManager.Roles.CountAsync(),
             IncidentCount = await _incidentService.GetTotalCountAsync(),
+            IncidentReportCount = await _incidentReportService.GetTotalCountAsync(),
             AssetCount = await _assetService.GetTotalCountAsync(),
             VulnerabilityCount = await _vulnerabilityService.GetTotalCountAsync(),
+            AuditLogCount = await _auditLogService.GetTotalCountAsync(),
             RecentAuditLogs = await _auditLogService.GetRecentAsync(5)
         };
 
@@ -99,7 +104,12 @@ public class AdminController : Controller
             DemoUserCount = await _userManager.Users.CountAsync(user =>
                 user.Email != null && user.Email.EndsWith("@cloudsecops.local")),
             DemoUsersSeeded = await _userManager.Users.CountAsync(user =>
-                user.Email != null && user.Email.EndsWith("@cloudsecops.local")) >= expectedRoles.Count
+                user.Email != null && user.Email.EndsWith("@cloudsecops.local")) >= expectedRoles.Count,
+            UserCount = await _userManager.Users.CountAsync(),
+            RoleCount = await _roleManager.Roles.CountAsync(),
+            IncidentCount = await _incidentService.GetTotalCountAsync(),
+            IncidentReportCount = await _incidentReportService.GetTotalCountAsync(),
+            AuditLogCount = await _auditLogService.GetTotalCountAsync()
         };
 
         return View(model);

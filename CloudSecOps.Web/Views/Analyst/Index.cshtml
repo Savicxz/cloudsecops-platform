@@ -4,127 +4,138 @@
     ViewData["Title"] = "Security Analyst";
 }
 
-<div class="d-flex justify-content-between align-items-start mb-4">
+<section class="cso-page-header">
     <div>
-        <h1 class="h3 mb-1">Security Analyst Workspace</h1>
-        <p class="text-muted mb-0">Review assigned incidents, high severity incidents, assets, and vulnerabilities.</p>
+        <p>Security Analyst</p>
+        <h1>Security Analyst Workspace</h1>
+        <span>Review assigned incidents, high severity incidents, assets, and vulnerabilities.</span>
     </div>
-    <a class="btn btn-outline-primary" asp-controller="Incidents" asp-action="Index">All Incidents</a>
-</div>
+    <a class="btn-primary-app" asp-controller="Incidents" asp-action="Index">All Incidents</a>
+</section>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">Open Incidents</span>
-                <div class="display-6 fw-semibold">@Model.OpenIncidentCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">High Severity</span>
-                <div class="display-6 fw-semibold">@Model.HighSeverityIncidentCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">Active Assets</span>
-                <div class="display-6 fw-semibold">@Model.AssetCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">High Risk Vulnerabilities</span>
-                <div class="display-6 fw-semibold">@Model.HighSeverityVulnerabilityCount</div>
-            </div>
-        </div>
-    </div>
-</div>
+<section class="metric-grid">
+    <article class="metric-card">
+        <span>Open Incidents</span>
+        <strong>@Model.OpenIncidentCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Open Reports</span>
+        <strong>@Model.OpenIncidentReportCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>High Severity</span>
+        <strong>@Model.HighSeverityIncidentCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Active Assets</span>
+        <strong>@Model.AssetCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>High Risk Vulnerabilities</span>
+        <strong>@Model.HighSeverityVulnerabilityCount</strong>
+    </article>
+</section>
 
-<div class="row g-3">
-    <div class="col-lg-6">
-        <div class="card h-100">
-            <div class="card-header fw-semibold">Assigned Open Incidents</div>
-            <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead>
+<section class="soc-grid">
+    <article class="cso-panel">
+        <h2>Assigned Open Incidents</h2>
+        <table class="cso-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.AssignedOpenIncidents.Count == 0)
+                {
+                    <tr><td colspan="4"><div class="cso-empty-state">No assigned open incidents.</div></td></tr>
+                }
+                else
+                {
+                    @foreach (var incident in Model.AssignedOpenIncidents)
+                    {
                         <tr>
-                            <th>Title</th>
-                            <th>Severity</th>
-                            <th>Status</th>
-                            <th></th>
+                            <td>@incident.Title</td>
+                            <td><span class="risk-pill @incident.Severity.ToString().ToLowerInvariant()">@incident.Severity</span></td>
+                            <td><span class="status-pill">@incident.Status</span></td>
+                            <td><a class="table-action" asp-action="IncidentDetails" asp-route-id="@incident.Id">Review</a></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.AssignedOpenIncidents.Count == 0)
-                        {
-                            <tr>
-                                <td colspan="4" class="text-muted">No assigned open incidents.</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var incident in Model.AssignedOpenIncidents)
-                            {
-                                <tr>
-                                    <td>@incident.Title</td>
-                                    <td>@incident.Severity</td>
-                                    <td>@incident.Status</td>
-                                    <td>
-                                        <a asp-action="IncidentDetails" asp-route-id="@incident.Id">Review</a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                    }
+                }
+            </tbody>
+        </table>
+    </article>
 
-    <div class="col-lg-6">
-        <div class="card h-100">
-            <div class="card-header fw-semibold">High Severity Incidents</div>
-            <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead>
+    <article class="cso-panel">
+        <h2>High Severity Incidents</h2>
+        <table class="cso-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.HighSeverityIncidents.Count == 0)
+                {
+                    <tr><td colspan="4"><div class="cso-empty-state">No high severity open incidents.</div></td></tr>
+                }
+                else
+                {
+                    @foreach (var incident in Model.HighSeverityIncidents)
+                    {
                         <tr>
-                            <th>Title</th>
-                            <th>Severity</th>
-                            <th>Status</th>
-                            <th></th>
+                            <td>@incident.Title</td>
+                            <td><span class="risk-pill @incident.Severity.ToString().ToLowerInvariant()">@incident.Severity</span></td>
+                            <td><span class="status-pill">@incident.Status</span></td>
+                            <td><a class="table-action" asp-action="IncidentDetails" asp-route-id="@incident.Id">Review</a></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.HighSeverityIncidents.Count == 0)
-                        {
-                            <tr>
-                                <td colspan="4" class="text-muted">No high severity open incidents.</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var incident in Model.HighSeverityIncidents)
-                            {
-                                <tr>
-                                    <td>@incident.Title</td>
-                                    <td>@incident.Severity</td>
-                                    <td>@incident.Status</td>
-                                    <td>
-                                        <a asp-action="IncidentDetails" asp-route-id="@incident.Id">Review</a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+                    }
+                }
+            </tbody>
+        </table>
+    </article>
+</section>
+
+<section class="cso-panel">
+    <h2>Recent Incident Reports</h2>
+    <table class="cso-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Reported</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.RecentIncidentReports.Count == 0)
+            {
+                <tr>
+                    <td colspan="5">
+                        <div class="cso-empty-state">No reporter-submitted incident reports yet.</div>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var report in Model.RecentIncidentReports)
+                {
+                    <tr>
+                        <td>@report.Title</td>
+                        <td><span class="risk-pill @report.Severity.ToLowerInvariant()">@report.Severity</span></td>
+                        <td><span class="status-pill">@report.Status</span></td>
+                        <td>@report.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td><a class="table-action" asp-action="IncidentReportDetails" asp-route-id="@report.Id">Review</a></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>

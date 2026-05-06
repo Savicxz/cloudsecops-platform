@@ -4,92 +4,81 @@
     ViewData["Title"] = "Administrator";
 }
 
-<div class="d-flex justify-content-between align-items-start mb-4">
+<section class="cso-page-header">
     <div>
-        <h1 class="h3 mb-1">Administrator Workspace</h1>
-        <p class="text-muted mb-0">Foundation, roles, demo users, and system readiness for Task 1.</p>
+        <p>Administration</p>
+        <h1>Administrator Workspace</h1>
+        <span>Foundation, roles, demo users, and system readiness for Task 1.</span>
     </div>
-    <div class="d-flex gap-2">
-        <a class="btn btn-outline-primary" asp-action="Users">User and Role Overview</a>
-        <a class="btn btn-outline-secondary" asp-action="SystemStatus">Seed Status</a>
+    <div class="form-actions">
+        <a class="btn-primary-app" asp-action="Users">User and Role Overview</a>
+        <a class="btn-ghost" asp-action="SystemStatus">Seed Status</a>
     </div>
-</div>
+</section>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-4 col-xl">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">Users</span>
-                <div class="display-6 fw-semibold">@Model.UserCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-xl">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">Roles</span>
-                <div class="display-6 fw-semibold">@Model.RoleCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-xl">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">Incidents</span>
-                <div class="display-6 fw-semibold">@Model.IncidentCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-xl">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">Assets</span>
-                <div class="display-6 fw-semibold">@Model.AssetCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-xl">
-        <div class="card h-100">
-            <div class="card-body">
-                <span class="text-muted small text-uppercase">Vulnerabilities</span>
-                <div class="display-6 fw-semibold">@Model.VulnerabilityCount</div>
-            </div>
-        </div>
-    </div>
-</div>
+<section class="metric-grid">
+    <article class="metric-card">
+        <span>Users</span>
+        <strong>@Model.UserCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Roles</span>
+        <strong>@Model.RoleCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Incidents</span>
+        <strong>@Model.IncidentCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Incident Reports</span>
+        <strong>@Model.IncidentReportCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Assets</span>
+        <strong>@Model.AssetCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Vulnerabilities</span>
+        <strong>@Model.VulnerabilityCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Audit Logs</span>
+        <strong>@Model.AuditLogCount</strong>
+    </article>
+</section>
 
-<div class="card">
-    <div class="card-header fw-semibold">Recent Audit Activity</div>
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead>
+<section class="cso-panel">
+    <h2>Recent Audit Activity</h2>
+    <table class="cso-table">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Entity</th>
+                <th>User</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.RecentAuditLogs.Count == 0)
+            {
                 <tr>
-                    <th>Action</th>
-                    <th>Entity</th>
-                    <th>User</th>
-                    <th>Timestamp</th>
+                    <td colspan="4">
+                        <div class="cso-empty-state">No audit activity has been recorded yet.</div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @if (Model.RecentAuditLogs.Count == 0)
+            }
+            else
+            {
+                @foreach (var log in Model.RecentAuditLogs)
                 {
                     <tr>
-                        <td colspan="4" class="text-muted">No audit activity has been recorded yet.</td>
+                        <td>@log.Action</td>
+                        <td>@log.EntityName</td>
+                        <td>@log.UserName</td>
+                        <td>@log.Timestamp.ToString("u")</td>
                     </tr>
                 }
-                else
-                {
-                    @foreach (var log in Model.RecentAuditLogs)
-                    {
-                        <tr>
-                            <td>@log.Action</td>
-                            <td>@log.EntityName</td>
-                            <td>@log.UserName</td>
-                            <td>@log.Timestamp.ToString("u")</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+            }
+        </tbody>
+    </table>
+</section>

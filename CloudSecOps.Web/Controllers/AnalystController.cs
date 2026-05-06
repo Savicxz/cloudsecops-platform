@@ -11,15 +11,18 @@ namespace CloudSecOps.Web.Controllers;
 public class AnalystController : Controller
 {
     private readonly IIncidentService _incidentService;
+    private readonly IIncidentReportService _incidentReportService;
     private readonly IAssetService _assetService;
     private readonly IVulnerabilityService _vulnerabilityService;
 
     public AnalystController(
         IIncidentService incidentService,
+        IIncidentReportService incidentReportService,
         IAssetService assetService,
         IVulnerabilityService vulnerabilityService)
     {
         _incidentService = incidentService;
+        _incidentReportService = incidentReportService;
         _assetService = assetService;
         _vulnerabilityService = vulnerabilityService;
     }
@@ -30,11 +33,13 @@ public class AnalystController : Controller
         var model = new AnalystDashboardViewModel
         {
             OpenIncidentCount = await _incidentService.GetOpenCountAsync(),
+            OpenIncidentReportCount = await _incidentReportService.GetOpenCountAsync(),
             HighSeverityIncidentCount = await _incidentService.GetHighSeverityOpenCountAsync(),
             AssetCount = await _assetService.GetActiveCountAsync(),
             HighSeverityVulnerabilityCount = await _vulnerabilityService.GetHighSeverityOpenCountAsync(),
             AssignedOpenIncidents = await _incidentService.GetAssignedOpenAsync(userId, 10),
-            HighSeverityIncidents = await _incidentService.GetHighSeverityOpenAsync(10)
+            HighSeverityIncidents = await _incidentService.GetHighSeverityOpenAsync(10),
+            RecentIncidentReports = await _incidentReportService.GetRecentAsync(10)
         };
 
         return View(model);
@@ -73,5 +78,35 @@ public class AnalystController : Controller
 
         TempData["StatusMessage"] = "Incident status updated.";
         return RedirectToAction(nameof(IncidentDetails), new { id });
+    }
+
+    public async Task<IActionResult> IncidentReportDetails(int id)
+    {
+        var report = await _incidentReportService.GetDetailsAsync(id);
+        if (report == null)
+        {
+            return NotFound();
+        }
+
+        return View(report);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateIncidentReportStatus(int id, string newStatus, string? reviewNote)
+    {
+        var updated = await _incidentReportService.UpdateStatusAsync(
+            id,
+            newStatus,
+            reviewNote,
+            User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        if (!updated)
+        {
+            return NotFound();
+        }
+
+        TempData["StatusMessage"] = "Incident report status updated.";
+        return RedirectToAction(nameof(IncidentReportDetails), new { id });
     }
 }

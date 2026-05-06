@@ -2,26 +2,75 @@
 
 @{
     ViewData["Title"] = "Dashboard";
+    ViewData["PageHeading"] = "SOC Overview";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 mb-1">Security Operations Dashboard</h1>
-        <p class="text-muted mb-0">Role-based overview for defensive monitoring and response coordination.</p>
-    </div>
-</div>
+<section class="metric-grid">
+    <article class="metric-card">
+        <span>Open Incidents</span>
+        <strong>@Model.OpenIncidents</strong>
+    </article>
+    <article class="metric-card">
+        <span>Critical Vulnerabilities</span>
+        <strong>@Model.CriticalVulnerabilities</strong>
+    </article>
+    <article class="metric-card">
+        <span>Active Assets</span>
+        <strong>@Model.ActiveAssets</strong>
+    </article>
+    <article class="metric-card">
+        <span>Audit Events</span>
+        <strong>@Model.RecentAuditEvents</strong>
+    </article>
+</section>
 
-@* TODO: Replace placeholder metrics with live service data and role-specific widgets. *@
-<div class="row g-3">
-    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Open incidents</p><h2>@Model.OpenIncidents</h2></div></div></div>
-    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Critical vulnerabilities</p><h2>@Model.CriticalVulnerabilities</h2></div></div></div>
-    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Active assets</p><h2>@Model.ActiveAssets</h2></div></div></div>
-    <div class="col-md-3"><div class="card h-100"><div class="card-body"><p class="text-muted mb-1">Recent audit events</p><h2>@Model.RecentAuditEvents</h2></div></div></div>
-</div>
+<div class="soc-grid">
+    <section class="data-panel priority-panel">
+        <header class="panel-header-light">
+            <h2>Priority Incidents</h2>
+            <a asp-controller="Incidents" asp-action="Index">All Cases</a>
+        </header>
+        <div class="incident-table">
+            <div class="incident-row incident-head">
+                <span>ID</span>
+                <span>Description</span>
+                <span>Risk</span>
+                <span>Status</span>
+            </div>
+            <div class="incident-row">
+                <span class="mono-id">INC-9104</span>
+                <strong>Abnormal IAM Activity Detection</strong>
+                <span><mark class="risk-pill critical">Critical</mark></span>
+                <span class="muted-status">Investigation</span>
+            </div>
+            <div class="incident-row">
+                <span class="mono-id">INC-8922</span>
+                <strong>External Storage Read Policy Found</strong>
+                <span><mark class="risk-pill high">High</mark></span>
+                <span class="muted-status">Triage</span>
+            </div>
+        </div>
+    </section>
 
-<div class="card mt-4">
-    <div class="card-body">
-        <h2 class="h5">Operational queue</h2>
-        <p class="text-muted mb-0">TODO: show assigned incidents, overdue vulnerabilities, and high-priority asset risks.</p>
-    </div>
+    <aside class="data-panel audit-stream">
+        <h2>Live Audit Stream</h2>
+        <div class="timeline">
+            <article>
+                <span></span>
+                <div>
+                    <strong>Case Assigned</strong>
+                    <p>INC-9104 moved to John Doe</p>
+                    <time>14:02:11 UTC</time>
+                </div>
+            </article>
+            <article>
+                <span></span>
+                <div>
+                    <strong>Scan Completed</strong>
+                    <p>Vulnerability scanner finished AWS-PROD</p>
+                    <time>11:15:30 UTC</time>
+                </div>
+            </article>
+        </div>
+    </aside>
 </div>

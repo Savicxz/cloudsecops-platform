@@ -6,6 +6,8 @@ public class AnalystDashboardViewModel
 {
     public int OpenIncidentCount { get; set; }
 
+    public int OpenIncidentReportCount { get; set; }
+
     public int HighSeverityIncidentCount { get; set; }
 
     public int AssetCount { get; set; }
@@ -17,4 +19,7 @@ public class AnalystDashboardViewModel
 
     public IReadOnlyList<IncidentListItemViewModel> HighSeverityIncidents { get; set; } =
         Array.Empty<IncidentListItemViewModel>();
+
+    public IReadOnlyList<AnalystIncidentReportListItemViewModel> RecentIncidentReports { get; set; } =
+        Array.Empty<AnalystIncidentReportListItemViewModel>();
 }

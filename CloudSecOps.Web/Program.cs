@@ -25,6 +25,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
+builder.Services.AddScoped<IIncidentReportService, IncidentReportService>();
 builder.Services.AddScoped<IVulnerabilityService, VulnerabilityService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();

@@ -11,4 +11,14 @@ public class SystemSeedStatusViewModel
     public IReadOnlyList<string> MissingRoles { get; set; } = Array.Empty<string>();
 
     public int DemoUserCount { get; set; }
+
+    public int UserCount { get; set; }
+
+    public int RoleCount { get; set; }
+
+    public int IncidentCount { get; set; }
+
+    public int IncidentReportCount { get; set; }
+
+    public int AuditLogCount { get; set; }
 }

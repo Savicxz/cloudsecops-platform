@@ -10,9 +10,13 @@ public class AdminDashboardViewModel
 
     public int IncidentCount { get; set; }
 
+    public int IncidentReportCount { get; set; }
+
     public int AssetCount { get; set; }
 
     public int VulnerabilityCount { get; set; }
+
+    public int AuditLogCount { get; set; }
 
     public IReadOnlyList<AuditLogListItemViewModel> RecentAuditLogs { get; set; } =
         Array.Empty<AuditLogListItemViewModel>();

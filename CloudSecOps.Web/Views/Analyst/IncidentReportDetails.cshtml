@@ -1,0 +1,79 @@
+@model CloudSecOps.Web.ViewModels.Analyst.AnalystIncidentReportReviewViewModel
+
+@{
+    ViewData["Title"] = "Analyst Incident Report Review";
+}
+
+<section class="cso-page-header">
+    <div>
+        <p>Security Analyst</p>
+        <h1>@Model.Title</h1>
+        <span>Review reporter-submitted incident details and advance the Task 1 status flow.</span>
+    </div>
+    <a class="btn-ghost" asp-action="Index">Back to Analyst Dashboard</a>
+</section>
+
+@if (TempData["StatusMessage"] is string statusMessage)
+{
+    <section class="cso-panel">
+        <span class="status-pill active">@statusMessage</span>
+    </section>
+}
+
+<section class="soc-grid">
+    <article class="cso-panel detail-grid">
+        <div class="detail-wide">
+            <span>Title</span>
+            <strong>@Model.Title</strong>
+        </div>
+        <div>
+            <span>Category</span>
+            <strong>@Model.Category</strong>
+        </div>
+        <div>
+            <span>Severity</span>
+            <strong><span class="risk-pill @Model.Severity.ToLowerInvariant()">@Model.Severity</span></strong>
+        </div>
+        <div>
+            <span>Affected Asset</span>
+            <strong>@Model.AffectedAsset</strong>
+        </div>
+        <div>
+            <span>Status</span>
+            <strong><span class="status-pill">@Model.Status</span></strong>
+        </div>
+        <div>
+            <span>Reporter</span>
+            <strong>@Model.ReporterName</strong>
+        </div>
+        <div>
+            <span>Reported</span>
+            <strong>@Model.CreatedAt.ToString("dd MMM yyyy hh:mm tt")</strong>
+        </div>
+        <div class="detail-wide">
+            <span>Description</span>
+            <p>@Model.Description</p>
+        </div>
+    </article>
+
+    <aside class="cso-panel cso-form">
+        <h2>Update Report Status</h2>
+        <form asp-action="UpdateIncidentReportStatus" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="mb-3">
+                <label class="form-label" for="newStatus">Status</label>
+                <select class="form-select" id="newStatus" name="newStatus">
+                    @foreach (var status in Model.AvailableStatuses)
+                    {
+                        <option value="@status" selected="@(status == Model.Status)">@status</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="reviewNote">Review Notes</label>
+                <textarea class="form-control" id="reviewNote" name="reviewNote" rows="5" placeholder="Add analyst review notes"></textarea>
+            </div>
+            <button class="btn-primary-app" type="submit">Save Review Update</button>
+        </form>
+    </aside>
+</section>

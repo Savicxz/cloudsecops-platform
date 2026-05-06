@@ -1,10 +1,12 @@
 using CloudSecOps.Web.Data;
 using CloudSecOps.Web.Models.Incidents;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CloudSecOps.Web.Controllers
 {
+  [Authorize(Roles = "Reporter")]
   public class IncidentReportsController : Controller{
     private readonly AppDbContext _context;
 
@@ -42,7 +44,7 @@ namespace CloudSecOps.Web.Controllers
         return View(report);
       }
 
-      report.Status = "Open";
+      report.Status = "Reported";
       report.ReporterName = "Reported User";
       report.CreatedAt = DateTime.UtcNow;
 
