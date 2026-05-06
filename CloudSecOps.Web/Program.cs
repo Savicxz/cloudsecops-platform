@@ -13,9 +13,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -34,6 +31,9 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IEvidenceFileService, EvidenceFileService>();
 
 var app = builder.Build();
+
+await DbInitializer.InitializeAsync(app.Services);
+
 
 if (!app.Environment.IsDevelopment())
 {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize(Roles = "Reporter,Analyst,Manager,Admin,Auditor")]
+[Authorize(Roles = "Reporter,SecurityAnalyst,Manager,Administrator,Auditor")]
 public class IncidentsController : Controller
 {
     private readonly IIncidentService _incidentService;

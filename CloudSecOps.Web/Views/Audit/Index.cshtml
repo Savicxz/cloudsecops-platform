@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Audit";
+}
+
+<h1 class="h3">Auditor Workspace</h1>
+<p class="text-muted">Developer 4 owns audit logs, completed incident review, evidence review, and completed incident validation.</p>
+
+<div class="list-group">
+    <a class="list-group-item list-group-item-action" asp-controller="Audit" asp-action="CompletedIncidents">Completed incidents review placeholder</a>
+    <a class="list-group-item list-group-item-action" asp-controller="Audit" asp-action="EvidenceReview">Evidence review placeholder</a>
+    <a class="list-group-item list-group-item-action" asp-controller="AuditLogs" asp-action="Index">Audit logs placeholder</a>
+</div>

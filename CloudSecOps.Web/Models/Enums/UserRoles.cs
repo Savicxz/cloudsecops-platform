@@ -3,8 +3,8 @@ namespace CloudSecOps.Web.Models.Enums;
 public enum UserRoles
 {
     Reporter,
-    Analyst,
+    SecurityAnalyst,
     Manager,
-    Admin,
+    Administrator,
     Auditor
 }

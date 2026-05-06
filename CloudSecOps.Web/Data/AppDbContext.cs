@@ -20,6 +20,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Incident> Incidents => Set<Incident>();
 
+    public DbSet<IncidentReport> IncidentReports => Set<IncidentReport>();
+
     public DbSet<IncidentUpdate> IncidentUpdates => Set<IncidentUpdate>();
 
     public DbSet<Vulnerability> Vulnerabilities => Set<Vulnerability>();
