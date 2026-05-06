@@ -1,0 +1,73 @@
+@model CloudSecOps.Web.ViewModels.Analyst.AnalystIncidentReviewViewModel
+@using CloudSecOps.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "Analyst Incident Review";
+}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h1 class="h3 mb-1">@Model.Incident.Title</h1>
+        <p class="text-muted mb-0">Review incident details and update the defensive response status.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to Analyst Dashboard</a>
+</div>
+
+@if (TempData["StatusMessage"] is string statusMessage)
+{
+    <div class="alert alert-success">@statusMessage</div>
+}
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">Incident Details</div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">@Model.Incident.Status</dd>
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">@Model.Incident.Description</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">Update Status</div>
+            <div class="card-body">
+                <form asp-action="UpdateIncidentStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Incident.Id" />
+                    <div class="mb-3">
+                        <label class="form-label" for="newStatus">Status</label>
+                        <select asp-for="NewStatus" class="form-select" name="newStatus" asp-items="Html.GetEnumSelectList<IncidentStatus>()"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="investigationNote">Investigation Notes</label>
+                        <textarea class="form-control" id="investigationNote" name="investigationNote" rows="5" placeholder="Add defensive investigation notes"></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Save Review Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header fw-semibold">Investigation Timeline</div>
+    <div class="card-body">
+        @if (Model.Incident.Updates.Count == 0)
+        {
+            <p class="text-muted mb-0">No investigation notes or status changes yet.</p>
+        }
+        else
+        {
+            <ul class="mb-0">
+                @foreach (var update in Model.Incident.Updates)
+                {
+                    <li>@update</li>
+                }
+            </ul>
+        }
+    </div>
+</div>

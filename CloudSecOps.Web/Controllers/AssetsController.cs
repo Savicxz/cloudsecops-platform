@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize(Roles = "Manager,Administrator,SecurityAnalyst")]
+[Authorize(Roles = "Manager,SecurityAnalyst")]
 public class AssetsController : Controller
 {
     private readonly IAssetService _assetService;

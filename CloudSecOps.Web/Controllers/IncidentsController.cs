@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize(Roles = "Reporter,SecurityAnalyst,Manager,Administrator,Auditor")]
+[Authorize(Roles = "SecurityAnalyst")]
 public class IncidentsController : Controller
 {
     private readonly IIncidentService _incidentService;
@@ -16,12 +16,20 @@ public class IncidentsController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // TODO: Restrict reporters to their own incidents and auditors to read-only views.
         var incidents = await _incidentService.GetRecentAsync(25);
         return View(incidents);
     }
 
-    public IActionResult Details(Guid id) => View();
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var incident = await _incidentService.GetDetailsAsync(id);
+        if (incident == null)
+        {
+            return NotFound();
+        }
+
+        return View(incident);
+    }
 
     public IActionResult Create() => View();
 

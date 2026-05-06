@@ -1,6 +1,24 @@
+@model CloudSecOps.Web.ViewModels.Incidents.IncidentDetailsViewModel
+
 @{
     ViewData["Title"] = "Incident Details";
 }
 
-<h1 class="h3">Incident Details</h1>
-<p class="text-muted">TODO: show incident timeline, assignments, related assets, and evidence files.</p>
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h1 class="h3 mb-1">@Model.Title</h1>
+        <p class="text-muted mb-0">Incident details for Security Analyst review.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to Incidents</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@Model.Status</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@Model.Description</dd>
+        </dl>
+    </div>
+</div>

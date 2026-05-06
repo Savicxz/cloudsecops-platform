@@ -1,24 +1,77 @@
+using CloudSecOps.Web.Data;
+using CloudSecOps.Web.Models.Assets;
 using CloudSecOps.Web.Services.Interfaces;
 using CloudSecOps.Web.ViewModels.Assets;
+using Microsoft.EntityFrameworkCore;
 
 namespace CloudSecOps.Web.Services.Implementations;
 
 public class AssetService : IAssetService
 {
-    public Task<int> GetTotalCountAsync() => Task.FromResult(0);
+    private readonly AppDbContext _dbContext;
 
-    public Task<IReadOnlyList<AssetListItemViewModel>> GetRecentAsync(int count) =>
-        Task.FromResult<IReadOnlyList<AssetListItemViewModel>>(Array.Empty<AssetListItemViewModel>());
-
-    public Task CreateAsync(AssetFormViewModel model)
+    public AssetService(AppDbContext dbContext)
     {
-        // TODO: Persist asset records through AppDbContext.
-        return Task.CompletedTask;
+        _dbContext = dbContext;
     }
 
-    public Task UpdateAsync(Guid id, AssetFormViewModel model)
+    public Task<int> GetTotalCountAsync() => _dbContext.Assets.CountAsync();
+
+    public Task<int> GetActiveCountAsync() =>
+        _dbContext.Assets.CountAsync(asset => asset.Status == "Active");
+
+    public async Task<IReadOnlyList<AssetListItemViewModel>> GetRecentAsync(int count)
     {
-        // TODO: Update asset records and record audit log entries.
-        return Task.CompletedTask;
+        return await _dbContext.Assets
+            .AsNoTracking()
+            .OrderByDescending(asset => asset.CreatedAt)
+            .Take(count)
+            .Select(asset => new AssetListItemViewModel
+            {
+                Id = asset.Id,
+                Name = asset.Name,
+                AssetType = asset.AssetType,
+                Environment = asset.Environment,
+                Criticality = asset.Criticality,
+                Status = asset.Status
+            })
+            .ToListAsync();
+    }
+
+    public async Task CreateAsync(AssetFormViewModel model)
+    {
+        _dbContext.Assets.Add(new Asset
+        {
+            Id = Guid.NewGuid(),
+            Name = model.Name,
+            Description = model.Description,
+            AssetType = model.AssetType,
+            Environment = model.Environment,
+            Owner = model.Owner,
+            Criticality = model.Criticality,
+            Status = "Active",
+            CreatedAt = DateTime.UtcNow
+        });
+
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Guid id, AssetFormViewModel model)
+    {
+        var asset = await _dbContext.Assets.FindAsync(id);
+        if (asset == null)
+        {
+            return;
+        }
+
+        asset.Name = model.Name;
+        asset.Description = model.Description;
+        asset.AssetType = model.AssetType;
+        asset.Environment = model.Environment;
+        asset.Owner = model.Owner;
+        asset.Criticality = model.Criticality;
+        asset.UpdatedAt = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
     }
 }

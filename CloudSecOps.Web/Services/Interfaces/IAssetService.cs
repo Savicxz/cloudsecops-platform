@@ -8,6 +8,8 @@ public interface IAssetService
 
     Task<IReadOnlyList<AssetListItemViewModel>> GetRecentAsync(int count);
 
+    Task<int> GetActiveCountAsync();
+
     Task CreateAsync(AssetFormViewModel model);
 
     Task UpdateAsync(Guid id, AssetFormViewModel model);

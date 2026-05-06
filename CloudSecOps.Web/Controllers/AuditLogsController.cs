@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize(Roles = "Administrator,Auditor")]
+[Authorize(Roles = "Auditor")]
 public class AuditLogsController : Controller
 {
     private readonly IAuditLogService _auditLogService;

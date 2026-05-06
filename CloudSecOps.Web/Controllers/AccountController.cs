@@ -53,7 +53,12 @@ public class AccountController : Controller
             return LocalRedirect(model.ReturnUrl);
         }
 
-        return RedirectToAction("Index", "Dashboard");
+        return selectedRole switch
+        {
+            UserRoles.Administrator => RedirectToAction("Index", "Admin"),
+            UserRoles.SecurityAnalyst => RedirectToAction("Index", "Analyst"),
+            _ => RedirectToAction("Index", "Home")
+        };
     }
 
     [Authorize]

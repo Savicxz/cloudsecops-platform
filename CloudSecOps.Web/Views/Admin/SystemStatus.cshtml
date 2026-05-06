@@ -1,0 +1,55 @@
+@model CloudSecOps.Web.ViewModels.Admin.SystemSeedStatusViewModel
+
+@{
+    ViewData["Title"] = "System Seed Status";
+}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h1 class="h3 mb-1">System Seed Status</h1>
+        <p class="text-muted mb-0">Basic readiness check for roles and demo users created by existing seeders.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to Admin</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="text-muted small text-uppercase">Roles Seeded</span>
+                <div class="h4 mt-2">@(Model.RolesSeeded ? "Ready" : "Missing Roles")</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="text-muted small text-uppercase">Demo Users</span>
+                <div class="h4 mt-2">@(Model.DemoUsersSeeded ? "Ready" : "Needs Review")</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="text-muted small text-uppercase">Demo User Count</span>
+                <div class="h4 mt-2">@Model.DemoUserCount</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header fw-semibold">Expected Roles</div>
+    <div class="card-body">
+        <p>@string.Join(", ", Model.ExpectedRoles)</p>
+        @if (Model.MissingRoles.Count > 0)
+        {
+            <p class="text-danger mb-0">Missing: @string.Join(", ", Model.MissingRoles)</p>
+        }
+        else
+        {
+            <p class="text-success mb-0">All expected roles are present.</p>
+        }
+    </div>
+</div>

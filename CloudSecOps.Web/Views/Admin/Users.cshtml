@@ -1,0 +1,57 @@
+@model CloudSecOps.Web.ViewModels.Admin.UserRoleOverviewViewModel
+
+@{
+    ViewData["Title"] = "User and Role Overview";
+}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h1 class="h3 mb-1">User and Role Overview</h1>
+        <p class="text-muted mb-0">Read-only view of seeded users and Task 1 role assignments.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to Admin</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header fw-semibold">Users</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Job Title</th>
+                            <th>Roles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>@user.Email</td>
+                                <td>@user.FullName</td>
+                                <td>@user.Department</td>
+                                <td>@user.JobTitle</td>
+                                <td>@string.Join(", ", user.Roles)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header fw-semibold">Roles</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var role in Model.Roles)
+                {
+                    <li class="list-group-item">@role</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -7,4 +7,6 @@ public interface IAuditLogService
     Task<int> GetTotalCountAsync();
 
     Task<IReadOnlyList<AuditLogListItemViewModel>> GetRecentAsync(int count);
+
+    Task RecordAsync(string action, string entityName, string entityId, string details, string? userId);
 }

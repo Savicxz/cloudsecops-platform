@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize(Roles = "Auditor,Administrator")]
+[Authorize(Roles = "Auditor")]
 public class AuditController : Controller
 {
     public IActionResult Index() => View();

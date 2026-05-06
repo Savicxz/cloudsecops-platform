@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = "SecurityAnalyst,Manager")]
 public class DashboardController : Controller
 {
     private readonly IDashboardService _dashboardService;

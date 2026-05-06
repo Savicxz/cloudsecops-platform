@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize(Roles = "Manager,Administrator")]
+[Authorize(Roles = "Manager")]
 public class ManagerController : Controller
 {
     public IActionResult Index() => View();
