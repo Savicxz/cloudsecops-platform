@@ -16,7 +16,7 @@ public class Incident
 
     public SeverityLevel Severity { get; set; }
 
-    public IncidentStatus Status { get; set; } = IncidentStatus.New;
+    public IncidentStatus Status { get; set; } = IncidentStatus.Reported;
 
     public string? ReportedByUserId { get; set; }
 

@@ -2,11 +2,9 @@ namespace CloudSecOps.Web.Models.Enums;
 
 public enum IncidentStatus
 {
-    New,
-    Triaged,
+    Reported,
     Assigned,
     Investigating,
     Resolved,
-    Closed,
-    FalsePositive
+    Closed
 }

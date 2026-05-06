@@ -21,12 +21,35 @@
                 <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Analyst" asp-action="Index">Analyst</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Manager" asp-action="Index">Manager</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Audit" asp-action="Index">Audit</a></li>
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Assets" asp-action="Index">Assets</a></li>
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Incidents" asp-action="Index">Incidents</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="IncidentReports" asp-action="Index">Reporter</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Reporter" asp-action="Index">Reporter</a></li>
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Vulnerabilities" asp-action="Index">Vulnerabilities</a></li>
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="AuditLogs" asp-action="Index">Audit Logs</a></li>
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="EvidenceFiles" asp-action="Index">Evidence Files</a></li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <span class="navbar-text me-3">@User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="btn btn-outline-light btn-sm">Sign out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Login">Sign in</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
