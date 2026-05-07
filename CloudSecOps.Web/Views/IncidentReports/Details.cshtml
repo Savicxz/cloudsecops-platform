@@ -7,6 +7,21 @@
 <div class="container mt-4">
     <h2>Incident Report Details</h2>
     <p class="text-muted">Detailed information about the submitted security incident.</p>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
     <div class="card mt-4">
         <div class="card-header">
@@ -17,10 +32,95 @@
             <p><strong>Category:</strong> @Model.Category</p>
             <p><strong>Severity:</strong> @Model.Severity</p>
             <p><strong>Affected Asset:</strong> @Model.AffectedAsset</p>
-            <p><strong>Status:</strong> @Model.Status</p>
-            <p><strong>Reporter:</strong> @Model.ReporterName</p>
-            <p><strong>Reported Date:</strong> @Model.CreatedAt.ToString("dd MMM yyyy hh:mm tt")</p>
+            <p>
+                <strong>Status:</strong>
 
+                @if (Model.Status == "Draft")
+                {
+                    <span class="badge bg-secondary">Draft</span>
+                }
+                else if (Model.Status == "Submitted")
+                {
+                    <span class="badge bg-primary">Submitted</span>
+                }
+                else if (Model.Status == "Under Review")
+                {
+                    <span class="badge bg-warning text-dark">Under Review</span>
+                }
+                else if (Model.Status == "Assigned")
+                {
+                    <span class="badge bg-info text-dark">Assigned</span>
+                }
+                else if (Model.Status == "Resolved")
+                {
+                    <span class="badge bg-success">Resolved</span>
+                }
+                else
+                {
+                    <span class="badge bg-dark">@Model.Status</span>
+                }
+            </p>
+            <p><strong>Reporter:</strong> @Model.ReporterName</p>
+            <p><strong>Created Date:</strong> @Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</p>
+
+            @if (Model.SubmittedAt != null)
+            {
+                <p><strong>Submitted At:</strong> @Model.SubmittedAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</p>
+            }
+            else
+            {
+                <p><strong>Submitted At:</strong> <span class="text-muted">Not submitted yet</span></p>
+            }
+            <hr />
+
+            @{
+                var statusOrder = new List<string> { "Draft", "Submitted", "Under Review", "Assigned", "Resolved" };
+                var currentStatusIndex = statusOrder.IndexOf(Model.Status);
+            }
+
+            <h5 class="mb-3">Status Tracking</h5>
+
+            <div class="list-group mb-3">
+                <div class="list-group-item d-flex align-items-start gap-3">
+                    <span class="badge rounded-pill @(currentStatusIndex >= 0 ? "bg-success" : "bg-light text-dark border")">1</span>
+                    <div>
+                        <strong>Draft</strong>
+                        <div class="text-muted small">Report is still editable by the reporter.</div>
+                    </div>
+                </div>
+
+                <div class="list-group-item d-flex align-items-start gap-3">
+                    <span class="badge rounded-pill @(currentStatusIndex >= 1 ? "bg-success" : "bg-light text-dark border")">2</span>
+                    <div>
+                        <strong>Submitted</strong>
+                        <div class="text-muted small">Report has been sent to the security team.</div>
+                    </div>
+                </div>
+
+                <div class="list-group-item d-flex align-items-start gap-3">
+                    <span class="badge rounded-pill @(currentStatusIndex >= 2 ? "bg-success" : "bg-light text-dark border")">3</span>
+                    <div>
+                        <strong>Under Review</strong>
+                        <div class="text-muted small">Security team is reviewing the report.</div>
+                    </div>
+                </div>
+
+                <div class="list-group-item d-flex align-items-start gap-3">
+                    <span class="badge rounded-pill @(currentStatusIndex >= 3 ? "bg-success" : "bg-light text-dark border")">4</span>
+                    <div>
+                        <strong>Assigned</strong>
+                        <div class="text-muted small">An analyst has been assigned to investigate.</div>
+                    </div>
+                </div>
+
+                <div class="list-group-item d-flex align-items-start gap-3">
+                    <span class="badge rounded-pill @(currentStatusIndex >= 4 ? "bg-success" : "bg-light text-dark border")">5</span>
+                    <div>
+                        <strong>Resolved</strong>
+                        <div class="text-muted small">The issue has been handled and closed.</div>
+                    </div>
+                </div>
+            </div>
             <hr />
 
             <p><strong>Description:</strong></p>

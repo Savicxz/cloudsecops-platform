@@ -1,12 +1,50 @@
 @{
-    ViewData["Title"] = "Reporter";
+    ViewData["Title"] = "Reporter Dashboard";
 }
 
-<h1 class="h3">Reporter Dashboard</h1>
-<p class="text-muted">Developer 2 owns reporter dashboard, report submission, validation, frontend polish, and user manual screenshots.</p>
+<div class="container mt-4">
+    <div class="p-4 mb-4 bg-light rounded-3 border">
+        <div class="container-fluid py-2">
+            <h1 class="display-6 fw-bold">Reporter Dashboard</h1>
+            <p class="col-md-8 fs-6 text-muted">
+                Submit suspicious activity reports, save drafts, and track the progress of your reported security incidents.
+            </p>
+        </div>
+    </div>
 
-<div class="list-group">
-    <a class="list-group-item list-group-item-action" asp-controller="Reporter" asp-action="SubmitReport">Submit report placeholder</a>
-    <a class="list-group-item list-group-item-action" asp-controller="Reporter" asp-action="MyReports">My reports placeholder</a>
-    <a class="list-group-item list-group-item-action" asp-controller="Reporter" asp-action="Details">Report details placeholder</a>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Submit suspicious activity Report</h5>
+                    <p class="card-text text-muted">
+                        Start a new suspicious activity report and save it as a draft before submitting.
+                    </p>
+
+                    <a class="btn btn-outline-primary"
+                       asp-controller="IncidentReports"
+                       asp-action="Create">
+                        Create Draft Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">My Incident Reports</h5>
+                    <p class="card-text text-muted">
+                        View your draft, submitted, under review, assigned, and resolved reports.
+                    </p>
+
+                    <a class="btn btn-outline-primary"
+                       asp-controller="IncidentReports"
+                       asp-action="Index">
+                        View My Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

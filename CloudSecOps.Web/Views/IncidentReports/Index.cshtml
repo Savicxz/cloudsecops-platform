@@ -7,50 +7,160 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2>My Incident Reports</h2>
-            <p class="text-muted">View and track the security incidents you have reported.</p>
+            <h2 class="fw-bold">My Incident Reports</h2>
+            <p class="text-muted mb-0">View and track the security incidents you have reported.</p>
         </div>
 
         <a class="btn btn-primary" asp-controller="IncidentReports" asp-action="Create">
-            Report New Incident
+            Submit suspicious activity report
         </a>
     </div>
 
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Severity</th>
-                <th>Affected Asset</th>
-                <th>Status</th>
-                <th>Reported Date</th>
-                <th>Action</th>
-            </tr>
-        </thead>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-        <tbody>
-            @foreach (var report in Model)
-            {
-                <tr>
-                    <td>@report.Title</td>
-                    <td>@report.Category</td>
-                    <td>@report.Severity</td>
-                    <td>@report.AffectedAsset</td>
-                    <td>
-                        <span class="badge bg-warning text-dark">@report.Status</span>
-                    </td>
-                    <td>@report.CreatedAt.ToString("dd MMM yyyy")</td>
-                    <td>
-                        <a class="btn btn-sm btn-outline-primary"
-                           asp-controller="IncidentReports"
-                           asp-action="Details"
-                           asp-route-id="@report.Id">
-                            View
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5">
+                <h5 class="fw-bold">No incident reports yet</h5>
+                <p class="text-muted">
+                    You have not created any suspicious activity reports. Start by creating a draft report.
+                </p>
+
+                <a class="btn btn-primary"
+                   asp-controller="IncidentReports"
+                   asp-action="Create">
+                    Create Your First Draft Report
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Severity</th>
+                                <th>Affected Asset</th>
+                                <th>Status</th>
+                                <th>Created Date</th>
+                                <th>Submitted At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var report in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@report.Title</td>
+                                    <td>@report.Category</td>
+                                    <td>@report.Severity</td>
+                                    <td>@report.AffectedAsset</td>
+
+                                    <td>
+                                        @if (report.Status == "Draft")
+                                        {
+                                            <span class="badge bg-secondary">Draft</span>
+                                        }
+                                        else if (report.Status == "Submitted")
+                                        {
+                                            <span class="badge bg-primary">Submitted</span>
+                                        }
+                                        else if (report.Status == "Under Review")
+                                        {
+                                            <span class="badge bg-warning text-dark">Under Review</span>
+                                        }
+                                        else if (report.Status == "Assigned")
+                                        {
+                                            <span class="badge bg-info text-dark">Assigned</span>
+                                        }
+                                        else if (report.Status == "Resolved")
+                                        {
+                                            <span class="badge bg-success">Resolved</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-dark">@report.Status</span>
+                                        }
+                                    </td>
+
+                                    <td>@report.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+
+                                    <td>
+                                        @if (report.SubmittedAt != null)
+                                        {
+                                            @report.SubmittedAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Not submitted</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               asp-controller="IncidentReports"
+                                               asp-action="Details"
+                                               asp-route-id="@report.Id">
+                                                View
+                                            </a>
+
+                                            @if (report.Status == "Draft")
+                                            {
+                                                <a class="btn btn-sm btn-outline-secondary"
+                                                   asp-controller="IncidentReports"
+                                                   asp-action="Edit"
+                                                   asp-route-id="@report.Id">
+                                                    Edit Draft
+                                                </a>
+
+                                                <form asp-controller="IncidentReports"
+                                                      asp-action="Submit"
+                                                      asp-route-id="@report.Id"
+                                                      method="post"
+                                                      class="d-inline">
+                                                    @Html.AntiForgeryToken()
+
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-success"
+                                                            onclick="return confirm('Submit this report? You cannot edit it after submission.');">
+                                                        Submit
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <a asp-controller="Reporter" asp-action="Index" class="btn btn-secondary mt-3">
+        Back to Dashboard
+    </a>
 </div>
