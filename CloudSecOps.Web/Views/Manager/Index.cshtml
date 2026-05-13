@@ -1,11 +1,222 @@
+@model List<CloudSecOps.Web.Models.Incidents.IncidentReport>
+
 @{
-    ViewData["Title"] = "Manager";
+    ViewData["Title"] = "Manager Dashboard";
 }
 
-<h1 class="h3">Manager Dashboard</h1>
-<p class="text-muted">Developer 3 owns manager dashboard, analyst assignment, and incident progress monitoring.</p>
+<div class="container mt-4">
+    <div class="p-4 mb-4 bg-light rounded-3 border">
+        <h1 class="display-6 fw-bold">Manager Dashboard</h1>
+        <p class="text-muted mb-0">
+            Monitor submitted incident reports, review operational risk, assign analysts, and track investigation progress.
+        </p>
+    </div>
 
-<div class="list-group">
-    <a class="list-group-item list-group-item-action" asp-controller="Manager" asp-action="AssignAnalyst">Assign analyst placeholder</a>
-    <a class="list-group-item list-group-item-action" asp-controller="Manager" asp-action="IncidentProgress">Incident progress monitoring placeholder</a>
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Reports</h6>
+                    <h3>@ViewBag.TotalReports</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Submitted</h6>
+                    <h3>@ViewBag.SubmittedReports</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Under Review</h6>
+                    <h3>@ViewBag.UnderReviewReports</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Assigned</h6>
+                    <h3>@ViewBag.AssignedReports</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Resolved</h6>
+                    <h3>@ViewBag.ResolvedReports</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">High Risk</h6>
+                    <h3>@ViewBag.HighRiskReports</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <span>Recent Incident Reports</span>
+            <a asp-controller="Manager" asp-action="IncidentProgress" class="btn btn-sm btn-outline-light">
+                View Progress
+            </a>
+        </div>
+
+        <div class="card-body">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="text-center py-4">
+                    <h5>No reports available</h5>
+                    <p class="text-muted mb-0">
+                        Submitted reporter incidents will appear here for manager review.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Reporter</th>
+                                <th>Category</th>
+                                <th>Severity</th>
+                                <th>Affected Asset</th>
+                                <th>Status</th>
+                                <th>Assigned Analyst</th>
+                                <th>Submitted</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var report in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@report.Title</td>
+                                    <td>@report.ReporterName</td>
+                                    <td>@report.Category</td>
+
+                                    <td>
+                                        @if (report.Severity == "Critical")
+                                        {
+                                            <span class="badge bg-danger">Critical</span>
+                                        }
+                                        else if (report.Severity == "High")
+                                        {
+                                            <span class="badge bg-warning text-dark">High</span>
+                                        }
+                                        else if (report.Severity == "Medium")
+                                        {
+                                            <span class="badge bg-info text-dark">Medium</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@report.Severity</span>
+                                        }
+                                    </td>
+
+                                    <td>@report.AffectedAsset</td>
+
+                                    <td>
+                                        @if (report.Status == "Submitted")
+                                        {
+                                            <span class="badge bg-primary">Submitted</span>
+                                        }
+                                        else if (report.Status == "Under Review")
+                                        {
+                                            <span class="badge bg-warning text-dark">Under Review</span>
+                                        }
+                                        else if (report.Status == "Assigned")
+                                        {
+                                            <span class="badge bg-info text-dark">Assigned</span>
+                                        }
+                                        else if (report.Status == "Resolved")
+                                        {
+                                            <span class="badge bg-success">Resolved</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@report.Status</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(report.AssignedAnalyst))
+                                        {
+                                            <span>@report.AssignedAnalyst</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Unassigned</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (report.SubmittedAt != null)
+                                        {
+                                            @report.SubmittedAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Not submitted</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               asp-controller="IncidentReports"
+                                               asp-action="Details"
+                                               asp-route-id="@report.Id">
+                                                View
+                                            </a>
+
+                                            @if (report.Status == "Submitted")
+                                            {
+                                                <form asp-controller="Manager"
+                                                      asp-action="MarkUnderReview"
+                                                      asp-route-id="@report.Id"
+                                                      method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                        Review
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            @if (report.Status == "Submitted" || report.Status == "Under Review" || report.Status == "Assigned")
+                                            {
+                                                <a class="btn btn-sm btn-outline-success"
+                                                   asp-controller="Manager"
+                                                   asp-action="AssignAnalyst"
+                                                   asp-route-id="@report.Id">
+                                                    Assign
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
 </div>

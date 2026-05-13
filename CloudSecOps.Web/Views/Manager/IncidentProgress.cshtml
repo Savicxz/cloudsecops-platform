@@ -1,6 +1,142 @@
+@model List<CloudSecOps.Web.Models.Incidents.IncidentReport>
+
 @{
     ViewData["Title"] = "Incident Progress";
 }
 
-<h1 class="h3">Incident Progress Monitoring</h1>
-<p class="text-muted">Placeholder for Developer 3: manager monitoring workflow.</p>
+<div class="container mt-4">
+    <div class="p-4 mb-4 bg-light rounded-3 border">
+        <h1 class="display-6 fw-bold">Incident Progress</h1>
+        <p class="text-muted mb-0">
+            Track reviewed, assigned, and resolved incident reports from a manager perspective.
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <span>Progress Tracking</span>
+            <a asp-controller="Manager" asp-action="Index" class="btn btn-sm btn-outline-light">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="card-body">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="text-center py-4">
+                    <h5>No active progress records</h5>
+                    <p class="text-muted mb-0">
+                        Reports marked under review, assigned, or resolved will appear here.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Assigned Analyst</th>
+                                <th>Assigned At</th>
+                                <th>Manager Note</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var report in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@report.Title</td>
+
+                                    <td>
+                                        @if (report.Severity == "Critical")
+                                        {
+                                            <span class="badge bg-danger">Critical</span>
+                                        }
+                                        else if (report.Severity == "High")
+                                        {
+                                            <span class="badge bg-warning text-dark">High</span>
+                                        }
+                                        else if (report.Severity == "Medium")
+                                        {
+                                            <span class="badge bg-info text-dark">Medium</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@report.Severity</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (report.Status == "Under Review")
+                                        {
+                                            <span class="badge bg-warning text-dark">Under Review</span>
+                                        }
+                                        else if (report.Status == "Assigned")
+                                        {
+                                            <span class="badge bg-info text-dark">Assigned</span>
+                                        }
+                                        else if (report.Status == "Resolved")
+                                        {
+                                            <span class="badge bg-success">Resolved</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@report.Status</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(report.AssignedAnalyst))
+                                        {
+                                            @report.AssignedAnalyst
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Unassigned</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (report.AssignedAt != null)
+                                        {
+                                            @report.AssignedAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Not assigned</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(report.ManagerNote))
+                                        {
+                                            @report.ManagerNote
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No note</span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           asp-controller="IncidentReports"
+                                           asp-action="Details"
+                                           asp-route-id="@report.Id">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

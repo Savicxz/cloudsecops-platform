@@ -36,5 +36,15 @@ namespace CloudSecOps.Web.Models.Incidents
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? SubmittedAt { get; set; }
+
+        [Display(Name = "Assigned Analyst")]
+        [StringLength(100, ErrorMessage = "Assigned analyst name must not exceed 100 characters.")]
+        public string? AssignedAnalyst { get; set; }
+
+        [Display(Name = "Manager Note")]
+        [StringLength(500, ErrorMessage = "Manager note must not exceed 500 characters.")]
+        public string? ManagerNote { get; set; }
+
+        public DateTime? AssignedAt { get; set; }
     }
 }

@@ -1,6 +1,121 @@
+@model CloudSecOps.Web.Models.Incidents.IncidentReport
+
 @{
     ViewData["Title"] = "Assign Analyst";
 }
 
-<h1 class="h3">Assign Analyst</h1>
-<p class="text-muted">Placeholder for Developer 3: assignment workflow.</p>
+<div class="container mt-4">
+    <div class="p-4 mb-4 bg-light rounded-3 border">
+        <h1 class="display-6 fw-bold">Assign Analyst</h1>
+        <p class="text-muted mb-0">
+            Assign this incident report to a security analyst for further investigation.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white">
+                    Incident Report Details
+                </div>
+
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Title</dt>
+                        <dd class="col-sm-8">@Model.Title</dd>
+
+                        <dt class="col-sm-4">Reporter</dt>
+                        <dd class="col-sm-8">@Model.ReporterName</dd>
+
+                        <dt class="col-sm-4">Category</dt>
+                        <dd class="col-sm-8">@Model.Category</dd>
+
+                        <dt class="col-sm-4">Severity</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Severity == "Critical")
+                            {
+                                <span class="badge bg-danger">Critical</span>
+                            }
+                            else if (Model.Severity == "High")
+                            {
+                                <span class="badge bg-warning text-dark">High</span>
+                            }
+                            else if (Model.Severity == "Medium")
+                            {
+                                <span class="badge bg-info text-dark">Medium</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@Model.Severity</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Affected Asset</dt>
+                        <dd class="col-sm-8">@Model.AffectedAsset</dd>
+
+                        <dt class="col-sm-4">Current Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-primary">@Model.Status</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Description</dt>
+                        <dd class="col-sm-8">@Model.Description</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    Assignment Form
+                </div>
+
+                <div class="card-body">
+                    <form asp-controller="Manager"
+                          asp-action="AssignAnalyst"
+                          asp-route-id="@Model.Id"
+                          method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label for="assignedAnalyst" class="form-label">Assigned Analyst</label>
+                            <select name="assignedAnalyst" id="assignedAnalyst" class="form-select" required>
+                                <option value="">-- Select Analyst --</option>
+                                <option value="analyst1@cloudsecops.local">analyst1@cloudsecops.local</option>
+                                <option value="analyst2@cloudsecops.local">analyst2@cloudsecops.local</option>
+                                <option value="analyst3@cloudsecops.local">analyst3@cloudsecops.local</option>
+                            </select>
+                            <span class="text-danger">@Html.ValidationMessage("AssignedAnalyst")</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="managerNote" class="form-label">Manager Note</label>
+                            <textarea name="managerNote"
+                                      id="managerNote"
+                                      class="form-control"
+                                      rows="5"
+                                      maxlength="500"
+                                      placeholder="Example: Prioritize this because it affects production services.">@Model.ManagerNote</textarea>
+                            <div class="form-text">
+                                Optional note for analyst context. Maximum 500 characters.
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Assign Analyst
+                            </button>
+
+                            <a asp-controller="Manager"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,11 +2,19 @@
 
 @{
     ViewData["Title"] = "Incident Report Details";
+
+    var statusOrder = new List<string> { "Draft", "Submitted", "Under Review", "Assigned", "Resolved" };
+    var currentStatusIndex = statusOrder.IndexOf(Model.Status);
 }
 
 <div class="container mt-4">
-    <h2>Incident Report Details</h2>
-    <p class="text-muted">Detailed information about the submitted security incident.</p>
+    <div class="p-4 mb-4 bg-light rounded-3 border">
+        <h1 class="display-6 fw-bold">Incident Report Details</h1>
+        <p class="text-muted mb-0">
+            Detailed information about the submitted security incident and its investigation progress.
+        </p>
+    </div>
+
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -23,60 +31,98 @@
         </div>
     }
 
-    <div class="card mt-4">
-        <div class="card-header">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-dark text-white">
             <strong>@Model.Title</strong>
         </div>
 
         <div class="card-body">
-            <p><strong>Category:</strong> @Model.Category</p>
-            <p><strong>Severity:</strong> @Model.Severity</p>
-            <p><strong>Affected Asset:</strong> @Model.AffectedAsset</p>
-            <p>
-                <strong>Status:</strong>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <h5 class="mb-3">Report Information</h5>
 
-                @if (Model.Status == "Draft")
-                {
-                    <span class="badge bg-secondary">Draft</span>
-                }
-                else if (Model.Status == "Submitted")
-                {
-                    <span class="badge bg-primary">Submitted</span>
-                }
-                else if (Model.Status == "Under Review")
-                {
-                    <span class="badge bg-warning text-dark">Under Review</span>
-                }
-                else if (Model.Status == "Assigned")
-                {
-                    <span class="badge bg-info text-dark">Assigned</span>
-                }
-                else if (Model.Status == "Resolved")
-                {
-                    <span class="badge bg-success">Resolved</span>
-                }
-                else
-                {
-                    <span class="badge bg-dark">@Model.Status</span>
-                }
-            </p>
-            <p><strong>Reporter:</strong> @Model.ReporterName</p>
-            <p><strong>Created Date:</strong> @Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</p>
+                    <p><strong>Category:</strong> @Model.Category</p>
+                    <p><strong>Severity:</strong> @Model.Severity</p>
+                    <p><strong>Affected Asset:</strong> @Model.AffectedAsset</p>
 
-            @if (Model.SubmittedAt != null)
-            {
-                <p><strong>Submitted At:</strong> @Model.SubmittedAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</p>
-            }
-            else
-            {
-                <p><strong>Submitted At:</strong> <span class="text-muted">Not submitted yet</span></p>
-            }
+                    <p>
+                        <strong>Status:</strong>
+
+                        @if (Model.Status == "Draft")
+                        {
+                            <span class="badge bg-secondary">Draft</span>
+                        }
+                        else if (Model.Status == "Submitted")
+                        {
+                            <span class="badge bg-primary">Submitted</span>
+                        }
+                        else if (Model.Status == "Under Review")
+                        {
+                            <span class="badge bg-warning text-dark">Under Review</span>
+                        }
+                        else if (Model.Status == "Assigned")
+                        {
+                            <span class="badge bg-info text-dark">Assigned</span>
+                        }
+                        else if (Model.Status == "Resolved")
+                        {
+                            <span class="badge bg-success">Resolved</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-dark">@Model.Status</span>
+                        }
+                    </p>
+
+                    <p><strong>Reporter:</strong> @Model.ReporterName</p>
+                    <p><strong>Created Date:</strong> @Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</p>
+
+                    @if (Model.SubmittedAt != null)
+                    {
+                        <p><strong>Submitted At:</strong> @Model.SubmittedAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</p>
+                    }
+                    else
+                    {
+                        <p><strong>Submitted At:</strong> <span class="text-muted">Not submitted yet</span></p>
+                    }
+                </div>
+
+                <div class="col-lg-6">
+                    <h5 class="mb-3">Manager Assignment</h5>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.AssignedAnalyst))
+                    {
+                        <p><strong>Assigned Analyst:</strong> @Model.AssignedAnalyst</p>
+                    }
+                    else
+                    {
+                        <p><strong>Assigned Analyst:</strong> <span class="text-muted">Not assigned yet</span></p>
+                    }
+
+                    @if (Model.AssignedAt != null)
+                    {
+                        <p><strong>Assigned At:</strong> @Model.AssignedAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt")</p>
+                    }
+                    else
+                    {
+                        <p><strong>Assigned At:</strong> <span class="text-muted">Not assigned yet</span></p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ManagerNote))
+                    {
+                        <div class="alert alert-info mb-0">
+                            <strong>Manager Note:</strong>
+                            <div class="mt-1">@Model.ManagerNote</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p><strong>Manager Note:</strong> <span class="text-muted">No manager note added.</span></p>
+                    }
+                </div>
+            </div>
+
             <hr />
-
-            @{
-                var statusOrder = new List<string> { "Draft", "Submitted", "Under Review", "Assigned", "Resolved" };
-                var currentStatusIndex = statusOrder.IndexOf(Model.Status);
-            }
 
             <h5 class="mb-3">Status Tracking</h5>
 
@@ -101,7 +147,7 @@
                     <span class="badge rounded-pill @(currentStatusIndex >= 2 ? "bg-success" : "bg-light text-dark border")">3</span>
                     <div>
                         <strong>Under Review</strong>
-                        <div class="text-muted small">Security team is reviewing the report.</div>
+                        <div class="text-muted small">Manager has acknowledged the report and started review.</div>
                     </div>
                 </div>
 
@@ -109,7 +155,16 @@
                     <span class="badge rounded-pill @(currentStatusIndex >= 3 ? "bg-success" : "bg-light text-dark border")">4</span>
                     <div>
                         <strong>Assigned</strong>
-                        <div class="text-muted small">An analyst has been assigned to investigate.</div>
+                        <div class="text-muted small">
+                            @if (!string.IsNullOrWhiteSpace(Model.AssignedAnalyst))
+                            {
+                                <span>Assigned to @Model.AssignedAnalyst for investigation.</span>
+                            }
+                            else
+                            {
+                                <span>An analyst has been assigned to investigate.</span>
+                            }
+                        </div>
                     </div>
                 </div>
 
@@ -121,14 +176,21 @@
                     </div>
                 </div>
             </div>
+
             <hr />
 
-            <p><strong>Description:</strong></p>
-            <p>@Model.Description</p>
+            <h5>Description</h5>
+            <p class="mb-0">@Model.Description</p>
         </div>
     </div>
 
-    <a asp-controller="IncidentReports" asp-action="Index" class="btn btn-secondary mt-3">
-        Back to My Reports
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-controller="IncidentReports" asp-action="Index" class="btn btn-secondary">
+            Back to My Reports
+        </a>
+
+        <a asp-controller="Manager" asp-action="Index" class="btn btn-outline-primary">
+            Back to Manager Dashboard
+        </a>
+    </div>
 </div>
