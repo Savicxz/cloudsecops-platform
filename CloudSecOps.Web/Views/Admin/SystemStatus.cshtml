@@ -1,33 +1,25 @@
 @model CloudSecOps.Web.ViewModels.Admin.SystemSeedStatusViewModel
 
 @{
-    ViewData["Title"] = "System Seed Status";
+    ViewData["Title"] = "System Status";
 }
 
 <section class="cso-page-header">
     <div>
         <p>Administration</p>
-        <h1>System Seed Status</h1>
-        <span>Basic readiness check for roles and demo users created by existing seeders.</span>
+        <h1>System Status</h1>
+        <span>Readiness check for roles, users, reports, incidents, and audit activity.</span>
     </div>
     <a class="btn-ghost" asp-action="Index">Back to Admin</a>
 </section>
 
 <section class="metric-grid">
     <article class="metric-card">
-        <span>Roles Seeded</span>
+        <span>Roles Ready</span>
         <strong>@(Model.RolesSeeded ? "Ready" : "Review")</strong>
     </article>
     <article class="metric-card">
-        <span>Demo Users</span>
-        <strong>@(Model.DemoUsersSeeded ? "Ready" : "Review")</strong>
-    </article>
-    <article class="metric-card">
-        <span>Demo User Count</span>
-        <strong>@Model.DemoUserCount</strong>
-    </article>
-    <article class="metric-card">
-        <span>Total Users</span>
+        <span>Users</span>
         <strong>@Model.UserCount</strong>
     </article>
     <article class="metric-card">

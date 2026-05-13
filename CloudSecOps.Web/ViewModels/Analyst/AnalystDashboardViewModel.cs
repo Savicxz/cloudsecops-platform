@@ -17,6 +17,9 @@ public class AnalystDashboardViewModel
     public IReadOnlyList<IncidentListItemViewModel> AssignedOpenIncidents { get; set; } =
         Array.Empty<IncidentListItemViewModel>();
 
+    public IReadOnlyList<IncidentListItemViewModel> OpenIncidents { get; set; } =
+        Array.Empty<IncidentListItemViewModel>();
+
     public IReadOnlyList<IncidentListItemViewModel> HighSeverityIncidents { get; set; } =
         Array.Empty<IncidentListItemViewModel>();
 

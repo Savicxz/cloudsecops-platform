@@ -38,6 +38,38 @@
 
 <section class="soc-grid">
     <article class="cso-panel">
+        <h2>Open Incidents</h2>
+        <table class="cso-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.OpenIncidents.Count == 0)
+                {
+                    <tr><td colspan="4"><div class="cso-empty-state">No open incidents.</div></td></tr>
+                }
+                else
+                {
+                    @foreach (var incident in Model.OpenIncidents)
+                    {
+                        <tr>
+                            <td>@incident.Title</td>
+                            <td><span class="risk-pill @incident.Severity.ToString().ToLowerInvariant()">@incident.Severity</span></td>
+                            <td><span class="status-pill">@incident.Status</span></td>
+                            <td><a class="table-action" asp-action="IncidentDetails" asp-route-id="@incident.Id">Review</a></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </article>
+
+    <article class="cso-panel">
         <h2>Assigned Open Incidents</h2>
         <table class="cso-table">
             <thead>

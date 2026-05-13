@@ -13,6 +13,8 @@ public interface IIncidentService
 
     Task<IReadOnlyList<IncidentListItemViewModel>> GetRecentAsync(int count);
 
+    Task<IReadOnlyList<IncidentListItemViewModel>> GetOpenAsync(int count);
+
     Task<IReadOnlyList<IncidentListItemViewModel>> GetAssignedOpenAsync(string? analystUserId, int count);
 
     Task<IReadOnlyList<IncidentListItemViewModel>> GetHighSeverityOpenAsync(int count);

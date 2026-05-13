@@ -38,6 +38,7 @@ public class AnalystController : Controller
             AssetCount = await _assetService.GetActiveCountAsync(),
             HighSeverityVulnerabilityCount = await _vulnerabilityService.GetHighSeverityOpenCountAsync(),
             AssignedOpenIncidents = await _incidentService.GetAssignedOpenAsync(userId, 10),
+            OpenIncidents = await _incidentService.GetOpenAsync(10),
             HighSeverityIncidents = await _incidentService.GetHighSeverityOpenAsync(10),
             RecentIncidentReports = await _incidentReportService.GetRecentAsync(10)
         };

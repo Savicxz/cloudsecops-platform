@@ -35,6 +35,13 @@ public class IncidentService : IIncidentService
             .ToListAsync();
     }
 
+    public async Task<IReadOnlyList<IncidentListItemViewModel>> GetOpenAsync(int count)
+    {
+        return await ProjectListItems(_dbContext.Incidents.Where(incident => incident.Status != IncidentStatus.Closed))
+            .Take(count)
+            .ToListAsync();
+    }
+
     public async Task<IReadOnlyList<IncidentListItemViewModel>> GetAssignedOpenAsync(string? analystUserId, int count)
     {
         var query = _dbContext.Incidents
@@ -73,7 +80,12 @@ public class IncidentService : IIncidentService
                 Id = incident.Id,
                 Title = incident.Title,
                 Description = incident.Description,
+                Category = incident.Category,
+                Severity = incident.Severity,
                 Status = incident.Status,
+                CreatedAt = incident.CreatedAt,
+                RelatedAssetName = incident.RelatedAsset != null ? incident.RelatedAsset.Name : "Unlinked",
+                AssignedToName = incident.AssignedToUser != null ? incident.AssignedToUser.FullName : "Unassigned",
                 Updates = incident.Updates
                     .OrderByDescending(update => update.CreatedAt)
                     .Select(update => string.IsNullOrWhiteSpace(update.Comment)

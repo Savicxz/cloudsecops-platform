@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CloudSecOps.Web.Controllers;
 
@@ -66,6 +67,7 @@ public class AdminController : Controller
         {
             userItems.Add(new UserRoleListItemViewModel
             {
+                UserId = user.Id,
                 Email = user.Email ?? string.Empty,
                 FullName = user.FullName,
                 Department = user.Department,
@@ -84,6 +86,61 @@ public class AdminController : Controller
         };
 
         return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateUserRoles(string userId, List<string> selectedRoles)
+    {
+        selectedRoles ??= [];
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var validRoles = await _roleManager.Roles
+            .Select(role => role.Name ?? string.Empty)
+            .Where(role => role != string.Empty)
+            .ToListAsync();
+
+        selectedRoles = selectedRoles
+            .Where(role => validRoles.Contains(role, StringComparer.OrdinalIgnoreCase))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var currentUserIdentifier = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if ((currentUserIdentifier == userId || currentUserIdentifier == user.Email)
+            && !selectedRoles.Contains(nameof(UserRoles.Administrator), StringComparer.OrdinalIgnoreCase))
+        {
+            TempData["StatusMessage"] = "You cannot remove your own Administrator role.";
+            return RedirectToAction(nameof(Users));
+        }
+
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        var rolesToAdd = selectedRoles.Except(currentRoles, StringComparer.OrdinalIgnoreCase).ToList();
+        var rolesToRemove = currentRoles.Except(selectedRoles, StringComparer.OrdinalIgnoreCase).ToList();
+
+        if (rolesToAdd.Count > 0)
+        {
+            await _userManager.AddToRolesAsync(user, rolesToAdd);
+        }
+
+        if (rolesToRemove.Count > 0)
+        {
+            await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+        }
+
+        await _auditLogService.RecordAsync(
+            "User roles updated",
+            nameof(ApplicationUser),
+            user.Id,
+            $"Roles: {string.Join(", ", selectedRoles.OrderBy(role => role))}",
+            User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        TempData["StatusMessage"] = $"Roles updated for {user.Email}.";
+        return RedirectToAction(nameof(Users));
     }
 
     public async Task<IActionResult> SystemStatus()
