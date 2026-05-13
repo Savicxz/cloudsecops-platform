@@ -1,7 +1,75 @@
+@model CloudSecOps.Web.ViewModels.Assets.AssetFormViewModel
+@using CloudSecOps.Web.Models.Enums
+
 @{
     ViewData["Title"] = "Create Asset";
 }
 
-<h1 class="h3">Create Asset</h1>
-<p class="text-muted">TODO: build asset form validation and persistence.</p>
-<div class="card"><div class="card-body"><button class="btn btn-primary" disabled>Save Asset</button></div></div>
+<section class="cso-page-header">
+    <div>
+        <h1>Create Asset</h1>
+        <p>Add a protected system, owner, environment, and business criticality.</p>
+    </div>
+    <a class="btn-ghost" asp-action="Index">Back to Assets</a>
+</section>
+
+<section class="cso-panel cso-form">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" placeholder="Example: Customer Portal API" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe the asset and its security relevance"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="AssetType" class="form-label"></label>
+            <select asp-for="AssetType" class="form-select" asp-items="Html.GetEnumSelectList<AssetType>()"></select>
+            <span asp-validation-for="AssetType" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Environment" class="form-label"></label>
+            <select asp-for="Environment" class="form-select" asp-items="Html.GetEnumSelectList<AssetEnvironment>()"></select>
+            <span asp-validation-for="Environment" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Owner" class="form-label"></label>
+            <input asp-for="Owner" class="form-control" placeholder="Example: Platform Engineering" />
+            <span asp-validation-for="Owner" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Criticality" class="form-label"></label>
+            <select asp-for="Criticality" class="form-select" asp-items="Html.GetEnumSelectList<AssetCriticality>()"></select>
+            <span asp-validation-for="Criticality" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-select">
+                <option>Active</option>
+                <option>Maintenance</option>
+                <option>Retired</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary-app" type="submit">Save Asset</button>
+            <a asp-action="Index" class="btn-ghost">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

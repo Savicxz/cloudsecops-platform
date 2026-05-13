@@ -10,6 +10,10 @@ public interface IAssetService
 
     Task<int> GetActiveCountAsync();
 
+    Task<AssetDetailsViewModel?> GetDetailsAsync(Guid id);
+
+    Task<AssetFormViewModel?> GetFormAsync(Guid id);
+
     Task CreateAsync(AssetFormViewModel model);
 
     Task UpdateAsync(Guid id, AssetFormViewModel model);

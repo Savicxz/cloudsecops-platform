@@ -1,6 +1,51 @@
+@model CloudSecOps.Web.ViewModels.Assets.AssetDetailsViewModel
+
 @{
     ViewData["Title"] = "Asset Details";
 }
 
-<h1 class="h3">Asset Details</h1>
-<p class="text-muted">TODO: show asset profile, linked incidents, vulnerabilities, and evidence.</p>
+<section class="cso-page-header">
+    <div>
+        <h1>@Model.Name</h1>
+        <p>Protected asset profile and ownership metadata.</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn-primary-app" asp-action="Edit" asp-route-id="@Model.Id">Edit Asset</a>
+        <a class="btn-ghost" asp-action="Index">Back to Assets</a>
+    </div>
+</section>
+
+<section class="cso-panel detail-grid">
+    <div>
+        <span>Status</span>
+        <strong><span class="status-pill">@Model.Status</span></strong>
+    </div>
+    <div>
+        <span>Type</span>
+        <strong>@Model.AssetType</strong>
+    </div>
+    <div>
+        <span>Environment</span>
+        <strong>@Model.Environment</strong>
+    </div>
+    <div>
+        <span>Criticality</span>
+        <strong><span class="risk-pill @Model.Criticality.ToString().ToLowerInvariant()">@Model.Criticality</span></strong>
+    </div>
+    <div>
+        <span>Owner</span>
+        <strong>@Model.Owner</strong>
+    </div>
+    <div>
+        <span>Created</span>
+        <strong>@Model.CreatedAt.ToString("dd MMM yyyy")</strong>
+    </div>
+    <div>
+        <span>Updated</span>
+        <strong>@(Model.UpdatedAt?.ToString("dd MMM yyyy") ?? "-")</strong>
+    </div>
+    <div class="detail-wide">
+        <span>Description</span>
+        <p>@Model.Description</p>
+    </div>
+</section>

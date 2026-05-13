@@ -1,4 +1,5 @@
 using CloudSecOps.Web.Services.Interfaces;
+using CloudSecOps.Web.ViewModels.Assets;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +21,53 @@ public class AssetsController : Controller
         return View(assets);
     }
 
-    public IActionResult Details(Guid id) => View();
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var asset = await _assetService.GetDetailsAsync(id);
+        if (asset == null)
+        {
+            return NotFound();
+        }
 
-    public IActionResult Create() => View();
+        return View(asset);
+    }
 
-    public IActionResult Edit(Guid id) => View();
+    public IActionResult Create() => View(new AssetFormViewModel());
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(AssetFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        await _assetService.CreateAsync(model);
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        var model = await _assetService.GetFormAsync(id);
+        if (model == null)
+        {
+            return NotFound();
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Guid id, AssetFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        await _assetService.UpdateAsync(id, model);
+        return RedirectToAction(nameof(Details), new { id });
+    }
 }

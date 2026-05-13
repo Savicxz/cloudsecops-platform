@@ -38,6 +38,45 @@ public class AssetService : IAssetService
             .ToListAsync();
     }
 
+    public async Task<AssetDetailsViewModel?> GetDetailsAsync(Guid id)
+    {
+        return await _dbContext.Assets
+            .AsNoTracking()
+            .Where(asset => asset.Id == id)
+            .Select(asset => new AssetDetailsViewModel
+            {
+                Id = asset.Id,
+                Name = asset.Name,
+                Description = asset.Description,
+                AssetType = asset.AssetType,
+                Environment = asset.Environment,
+                Owner = asset.Owner,
+                Criticality = asset.Criticality,
+                Status = asset.Status,
+                CreatedAt = asset.CreatedAt,
+                UpdatedAt = asset.UpdatedAt
+            })
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<AssetFormViewModel?> GetFormAsync(Guid id)
+    {
+        return await _dbContext.Assets
+            .AsNoTracking()
+            .Where(asset => asset.Id == id)
+            .Select(asset => new AssetFormViewModel
+            {
+                Name = asset.Name,
+                Description = asset.Description,
+                AssetType = asset.AssetType,
+                Environment = asset.Environment,
+                Owner = asset.Owner,
+                Criticality = asset.Criticality,
+                Status = asset.Status
+            })
+            .FirstOrDefaultAsync();
+    }
+
     public async Task CreateAsync(AssetFormViewModel model)
     {
         _dbContext.Assets.Add(new Asset
@@ -49,7 +88,7 @@ public class AssetService : IAssetService
             Environment = model.Environment,
             Owner = model.Owner,
             Criticality = model.Criticality,
-            Status = "Active",
+            Status = model.Status,
             CreatedAt = DateTime.UtcNow
         });
 
@@ -70,6 +109,7 @@ public class AssetService : IAssetService
         asset.Environment = model.Environment;
         asset.Owner = model.Owner;
         asset.Criticality = model.Criticality;
+        asset.Status = model.Status;
         asset.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync();

@@ -1,7 +1,71 @@
+@model CloudSecOps.Web.ViewModels.Assets.AssetFormViewModel
+@using CloudSecOps.Web.Models.Enums
+
 @{
     ViewData["Title"] = "Edit Asset";
 }
 
-<h1 class="h3">Edit Asset</h1>
-<p class="text-muted">TODO: load selected asset and update inventory metadata.</p>
-<div class="card"><div class="card-body"><button class="btn btn-primary" disabled>Update Asset</button></div></div>
+<section class="cso-page-header">
+    <div>
+        <h1>Edit Asset</h1>
+        <p>Update inventory metadata used by incidents and vulnerability review.</p>
+    </div>
+    <a class="btn-ghost" asp-action="Index">Back to Assets</a>
+</section>
+
+<section class="cso-panel cso-form">
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="AssetType" class="form-label"></label>
+            <select asp-for="AssetType" class="form-select" asp-items="Html.GetEnumSelectList<AssetType>()"></select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Environment" class="form-label"></label>
+            <select asp-for="Environment" class="form-select" asp-items="Html.GetEnumSelectList<AssetEnvironment>()"></select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Owner" class="form-label"></label>
+            <input asp-for="Owner" class="form-control" />
+            <span asp-validation-for="Owner" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Criticality" class="form-label"></label>
+            <select asp-for="Criticality" class="form-select" asp-items="Html.GetEnumSelectList<AssetCriticality>()"></select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-select">
+                <option>Active</option>
+                <option>Maintenance</option>
+                <option>Retired</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary-app" type="submit">Update Asset</button>
+            <a asp-action="Index" class="btn-ghost">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
