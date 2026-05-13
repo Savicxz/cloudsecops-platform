@@ -1,7 +1,5 @@
-using System.Security.Claims;
-using CloudSecOps.Web.Models.Enums;
+using CloudSecOps.Web.Models.Identity;
 using CloudSecOps.Web.ViewModels.Account;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +8,15 @@ namespace CloudSecOps.Web.Controllers;
 
 public class AccountController : Controller
 {
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+    {
+        _signInManager = signInManager;
+        _userManager = userManager;
+    }
+
     [AllowAnonymous]
     [HttpGet]
     public IActionResult Login(string? returnUrl = null)
@@ -22,43 +29,61 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (!Enum.TryParse<UserRoles>(model.Role, out var selectedRole))
-        {
-            ModelState.AddModelError(nameof(model.Role), "Choose a valid role.");
-        }
-
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var role = selectedRole.ToString();
-        var displayName = role == nameof(UserRoles.Administrator) ? "CloudSecOps Administrator" : $"CloudSecOps {role}";
-
-        var claims = new List<Claim>
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
         {
-            new(ClaimTypes.NameIdentifier, model.Email),
-            new(ClaimTypes.Name, displayName),
-            new(ClaimTypes.Email, model.Email),
-            new(ClaimTypes.Role, role)
-        };
+            ModelState.AddModelError(string.Empty, "Invalid email or password.");
+            return View(model);
+        }
 
-        var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
-        var principal = new ClaimsPrincipal(identity);
+        var result = await _signInManager.PasswordSignInAsync(
+            user.UserName ?? model.Email,
+            model.Password,
+            isPersistent: false,
+            lockoutOnFailure: false);
 
-        await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+        if (!result.Succeeded)
+        {
+            ModelState.AddModelError(string.Empty, "Invalid email or password.");
+            return View(model);
+        }
 
         if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
         {
             return LocalRedirect(model.ReturnUrl);
         }
 
-        return selectedRole switch
+        if (await _userManager.IsInRoleAsync(user, "Administrator"))
         {
-            UserRoles.Administrator => RedirectToAction("Index", "Admin"),
-            UserRoles.SecurityAnalyst => RedirectToAction("Index", "Analyst"),
-            _ => RedirectToAction("Index", "Home")
-        };
+            return RedirectToAction("Index", "Admin");
+        }
+
+        if (await _userManager.IsInRoleAsync(user, "SecurityAnalyst"))
+        {
+            return RedirectToAction("Index", "Analyst");
+        }
+
+        if (await _userManager.IsInRoleAsync(user, "Reporter"))
+        {
+            return RedirectToAction("Index", "Reporter");
+        }
+
+        if (await _userManager.IsInRoleAsync(user, "Manager"))
+        {
+            return RedirectToAction("Index", "Manager");
+        }
+
+        if (await _userManager.IsInRoleAsync(user, "Auditor"))
+        {
+            return RedirectToAction("Index", "Audit");
+        }
+
+        return RedirectToAction("Index", "Home");
     }
 
     [Authorize]
@@ -66,7 +91,7 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
     }
 }

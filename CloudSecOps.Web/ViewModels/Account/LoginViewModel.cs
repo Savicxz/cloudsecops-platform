@@ -9,7 +9,8 @@ public class LoginViewModel
     public string Email { get; set; } = "admin@cloudsecops.local";
 
     [Required]
-    public string Role { get; set; } = "Administrator";
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
 
     public string? ReturnUrl { get; set; }
 }
