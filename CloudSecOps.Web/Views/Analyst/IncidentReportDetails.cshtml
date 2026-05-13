@@ -50,6 +50,10 @@
             <span>Reported</span>
             <strong>@Model.CreatedAt.ToString("dd MMM yyyy hh:mm tt")</strong>
         </div>
+        <div>
+            <span>Submitted</span>
+            <strong>@(Model.SubmittedAt?.ToString("dd MMM yyyy hh:mm tt") ?? "Not submitted")</strong>
+        </div>
         <div class="detail-wide">
             <span>Description</span>
             <p>@Model.Description</p>

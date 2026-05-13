@@ -1,6 +1,71 @@
+@model CloudSecOps.Web.Models.Incidents.IncidentReport
+
 @{
     ViewData["Title"] = "Report Details";
 }
 
-<h1 class="h3">Report Details</h1>
-<p class="text-muted">Placeholder for Developer 2: reporter-facing report status details.</p>
+<section class="cso-page-header">
+    <div>
+        <h1>@Model.Title</h1>
+        <p>Reporter-facing report status details.</p>
+    </div>
+    <a class="btn-ghost" asp-action="MyReports">Back to My Reports</a>
+</section>
+
+@if (TempData["StatusMessage"] is string statusMessage)
+{
+    <section class="cso-panel">
+        <span class="status-pill active">@statusMessage</span>
+    </section>
+}
+
+<section class="cso-panel detail-grid">
+    <div class="detail-wide">
+        <span>Title</span>
+        <strong>@Model.Title</strong>
+    </div>
+    <div>
+        <span>Category</span>
+        <strong>@Model.Category</strong>
+    </div>
+    <div>
+        <span>Severity</span>
+        <strong><span class="risk-pill @Model.Severity.ToLowerInvariant()">@Model.Severity</span></strong>
+    </div>
+    <div>
+        <span>Affected Asset</span>
+        <strong>@Model.AffectedAsset</strong>
+    </div>
+    <div>
+        <span>Status</span>
+        <strong><span class="status-pill">@Model.Status</span></strong>
+    </div>
+    <div>
+        <span>Reporter</span>
+        <strong>@Model.ReporterName</strong>
+    </div>
+    <div>
+        <span>Created</span>
+        <strong>@Model.CreatedAt.ToString("dd MMM yyyy hh:mm tt")</strong>
+    </div>
+    <div>
+        <span>Submitted</span>
+        <strong>@(Model.SubmittedAt?.ToString("dd MMM yyyy hh:mm tt") ?? "Not submitted")</strong>
+    </div>
+    <div class="detail-wide">
+        <span>Description</span>
+        <p>@Model.Description</p>
+    </div>
+</section>
+
+@if (Model.Status == "Draft")
+{
+    <section class="cso-panel">
+        <div class="form-actions">
+            <a class="btn-ghost" asp-controller="IncidentReports" asp-action="Edit" asp-route-id="@Model.Id">Edit Draft</a>
+            <form asp-controller="IncidentReports" asp-action="Submit" asp-route-id="@Model.Id" method="post">
+                <button type="submit" class="btn-primary-app">Submit for Review</button>
+            </form>
+        </div>
+    </section>
+}

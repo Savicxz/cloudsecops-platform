@@ -1,24 +1,26 @@
 @model CloudSecOps.Web.Models.Incidents.IncidentReport
 
 @{
-    ViewData["Title"] = "Report New Incident";
+    ViewData["Title"] = "Edit Incident Report Draft";
 }
 
 <section class="cso-page-header">
     <div>
         <p>Reporter Workspace</p>
-        <h1>Report New Incident</h1>
-        <span>Save a draft or submit defensive incident information for analyst review.</span>
+        <h1>Edit Draft Report</h1>
+        <span>Update the draft before submitting it for analyst review.</span>
     </div>
+    <a class="btn-ghost" asp-action="Details" asp-route-id="@Model.Id">Back to Report</a>
 </section>
 
 <section class="cso-panel cso-form">
-    <form asp-action="Create" method="post">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="mb-3">
             <label asp-for="Title" class="form-label"></label>
-            <input asp-for="Title" class="form-control" placeholder="Example: Suspicious login activity" />
+            <input asp-for="Title" class="form-control" />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
 
@@ -50,20 +52,20 @@
 
         <div class="mb-3">
             <label asp-for="AffectedAsset" class="form-label"></label>
-            <input asp-for="AffectedAsset" class="form-control" placeholder="Example: Web server, employee laptop, email account" />
+            <input asp-for="AffectedAsset" class="form-control" />
             <span asp-validation-for="AffectedAsset" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Describe what happened"></textarea>
+            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
         <div class="form-actions">
             <button type="submit" name="submitAction" value="Submit" class="btn-primary-app">Submit Report</button>
             <button type="submit" name="submitAction" value="Draft" class="btn-ghost">Save Draft</button>
-            <a asp-controller="IncidentReports" asp-action="Index" class="btn-ghost">Cancel</a>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn-ghost">Cancel</a>
         </div>
     </form>
 </section>

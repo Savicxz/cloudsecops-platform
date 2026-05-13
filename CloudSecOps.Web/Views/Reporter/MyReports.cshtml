@@ -1,6 +1,58 @@
+@model IReadOnlyList<CloudSecOps.Web.Models.Incidents.IncidentReport>
+
 @{
     ViewData["Title"] = "My Reports";
 }
 
-<h1 class="h3">My Reports</h1>
-<p class="text-muted">Placeholder for Developer 2: reporter-owned report list and screenshot-ready flow.</p>
+<section class="cso-page-header">
+    <div>
+        <h1>My Reports</h1>
+        <p>Track drafts, submitted reports, and analyst review status.</p>
+    </div>
+    <a class="btn-primary-app" asp-action="SubmitReport">Submit Report</a>
+</section>
+
+<section class="cso-panel">
+    @if (Model.Count == 0)
+    {
+        <div class="cso-empty-state">No reports submitted yet.</div>
+    }
+    else
+    {
+        <table class="cso-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Severity</th>
+                    <th>Affected Asset</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Submitted</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var report in Model)
+                {
+                    <tr>
+                        <td>@report.Title</td>
+                        <td>@report.Category</td>
+                        <td><span class="risk-pill @report.Severity.ToLowerInvariant()">@report.Severity</span></td>
+                        <td>@report.AffectedAsset</td>
+                        <td><span class="status-pill">@report.Status</span></td>
+                        <td>@report.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td>@(report.SubmittedAt?.ToString("dd MMM yyyy") ?? "-")</td>
+                        <td>
+                            <a class="table-action" asp-action="Details" asp-route-id="@report.Id">View</a>
+                            @if (report.Status == "Draft")
+                            {
+                                <a class="table-action" asp-controller="IncidentReports" asp-action="Edit" asp-route-id="@report.Id">Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

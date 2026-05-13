@@ -2,11 +2,20 @@
     ViewData["Title"] = "Reporter";
 }
 
-<h1 class="h3">Reporter Dashboard</h1>
-<p class="text-muted">Developer 2 owns reporter dashboard, report submission, validation, frontend polish, and user manual screenshots.</p>
-
-<div class="list-group">
-    <a class="list-group-item list-group-item-action" asp-controller="Reporter" asp-action="SubmitReport">Submit report placeholder</a>
-    <a class="list-group-item list-group-item-action" asp-controller="Reporter" asp-action="MyReports">My reports placeholder</a>
-    <a class="list-group-item list-group-item-action" asp-controller="Reporter" asp-action="Details">Report details placeholder</a>
+<div class="cso-page-header">
+    <div>
+        <h1>Reporter Dashboard</h1>
+        <p>Create draft reports, submit them for analyst review, and track status.</p>
+    </div>
 </div>
+
+<section class="role-card-grid">
+    <a class="cso-panel action-panel" asp-controller="Reporter" asp-action="SubmitReport">
+        <h2>Submit Report</h2>
+        <p>Create a new report as a draft or submit it for review.</p>
+    </a>
+    <a class="cso-panel action-panel" asp-controller="Reporter" asp-action="MyReports">
+        <h2>My Reports</h2>
+        <p>Track reports submitted by the signed-in reporter.</p>
+    </a>
+</section>

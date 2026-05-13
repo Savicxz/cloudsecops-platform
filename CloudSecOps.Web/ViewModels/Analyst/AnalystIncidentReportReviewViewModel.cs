@@ -20,10 +20,12 @@ public class AnalystIncidentReportReviewViewModel
 
     public DateTime CreatedAt { get; set; }
 
+    public DateTime? SubmittedAt { get; set; }
+
     public string NewStatus { get; set; } = string.Empty;
 
     public string? ReviewNote { get; set; }
 
     public IReadOnlyList<string> AvailableStatuses { get; set; } =
-        ["Reported", "Assigned", "Investigating", "Resolved", "Closed"];
+        ["Submitted", "Assigned", "Investigating", "Resolved", "Closed"];
 }

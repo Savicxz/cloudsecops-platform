@@ -8,7 +8,8 @@ namespace CloudSecOps.Web.Services.Implementations;
 
 public class IncidentReportService : IIncidentReportService
 {
-    private static readonly string[] OpenStatuses = ["Open", "Reported", "Assigned", "Investigating"];
+    private static readonly string[] OpenStatuses = ["Open", "Reported", "Submitted", "Assigned", "Investigating"];
+    private static readonly string[] ReviewStatuses = ["Submitted", "Reported", "Assigned", "Investigating", "Resolved", "Closed"];
 
     private readonly AppDbContext _dbContext;
     private readonly IAuditLogService _auditLogService;
@@ -28,6 +29,7 @@ public class IncidentReportService : IIncidentReportService
     {
         return await _dbContext.IncidentReports
             .AsNoTracking()
+            .Where(report => report.Status != "Draft")
             .OrderByDescending(report => report.CreatedAt)
             .Take(count)
             .Select(report => new AnalystIncidentReportListItemViewModel
@@ -47,7 +49,7 @@ public class IncidentReportService : IIncidentReportService
     {
         return await _dbContext.IncidentReports
             .AsNoTracking()
-            .Where(report => report.Id == id)
+            .Where(report => report.Id == id && report.Status != "Draft")
             .Select(report => new AnalystIncidentReportReviewViewModel
             {
                 Id = report.Id,
@@ -59,6 +61,7 @@ public class IncidentReportService : IIncidentReportService
                 Status = report.Status,
                 ReporterName = report.ReporterName,
                 CreatedAt = report.CreatedAt,
+                SubmittedAt = report.SubmittedAt,
                 NewStatus = report.Status
             })
             .FirstOrDefaultAsync();
@@ -66,6 +69,11 @@ public class IncidentReportService : IIncidentReportService
 
     public async Task<bool> UpdateStatusAsync(int id, string status, string? reviewNote, string? userId)
     {
+        if (!ReviewStatuses.Contains(status))
+        {
+            return false;
+        }
+
         var report = await _dbContext.IncidentReports.FindAsync(id);
         if (report == null)
         {
