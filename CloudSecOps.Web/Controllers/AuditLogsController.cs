@@ -20,5 +20,14 @@ public class AuditLogsController : Controller
         return View(auditLogs);
     }
 
-    public IActionResult Details(Guid id) => View();
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var log = await _auditLogService.GetDetailsAsync(id);
+        if (log == null)
+        {
+            return NotFound();
+        }
+
+        return View(log);
+    }
 }

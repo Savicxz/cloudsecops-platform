@@ -1,6 +1,41 @@
+@model IReadOnlyList<CloudSecOps.Web.Models.Evidence.EvidenceFile>
+
 @{
     ViewData["Title"] = "Evidence Review";
 }
 
-<h1 class="h3">Evidence Review</h1>
-<p class="text-muted">Placeholder for Developer 4: evidence review workflow.</p>
+<section class="cso-page-header">
+    <div>
+        <h1>Evidence Review</h1>
+        <p>Read-only evidence metadata linked to incidents and vulnerabilities.</p>
+    </div>
+    <a class="btn-ghost" asp-action="Index">Back to Audit</a>
+</section>
+
+<section class="cso-panel">
+    <table class="cso-table">
+        <thead>
+            <tr><th>File</th><th>Type</th><th>Linked Record</th><th>Uploaded By</th><th>Uploaded</th></tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="5"><div class="cso-empty-state">No evidence files are available for review.</div></td></tr>
+            }
+            else
+            {
+                @foreach (var file in Model)
+                {
+                    var linkedRecord = file.Incident?.Title ?? file.Vulnerability?.Title ?? "Unlinked";
+                    <tr>
+                        <td>@file.FileName</td>
+                        <td>@file.FileType</td>
+                        <td>@linkedRecord</td>
+                        <td>@(file.UploadedByUser?.FullName ?? "System")</td>
+                        <td>@file.UploadedAt.ToString("dd MMM yyyy")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>

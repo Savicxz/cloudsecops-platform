@@ -1,6 +1,68 @@
+@model CloudSecOps.Web.ViewModels.Vulnerabilities.VulnerabilityDetailsViewModel
+
 @{
     ViewData["Title"] = "Vulnerability Details";
 }
 
-<h1 class="h3">Vulnerability Details</h1>
-<p class="text-muted">TODO: show affected asset, recommendation, remediation notes, and evidence links.</p>
+<section class="cso-page-header">
+    <div>
+        <h1>@Model.Title</h1>
+        <p>Read remediation detail, current risk, and recommendation.</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn-primary-app" asp-action="Edit" asp-route-id="@Model.Id">Edit Finding</a>
+        <a class="btn-ghost" asp-action="Index">Back to Vulnerabilities</a>
+    </div>
+</section>
+
+<section class="cso-panel detail-grid">
+    <div>
+        <span>Status</span>
+        <strong><span class="status-pill">@Model.Status</span></strong>
+    </div>
+    <div>
+        <span>Severity</span>
+        <strong><span class="risk-pill @Model.Severity.ToString().ToLowerInvariant()">@Model.Severity</span></strong>
+    </div>
+    <div>
+        <span>CVSS</span>
+        <strong>@(Model.CvssScore?.ToString("0.0") ?? "-")</strong>
+    </div>
+    <div>
+        <span>Affected Asset</span>
+        <strong>@Model.AffectedAssetName</strong>
+    </div>
+    <div>
+        <span>Due Date</span>
+        <strong>@(Model.DueDate?.ToString("dd MMM yyyy") ?? "-")</strong>
+    </div>
+    <div>
+        <span>Created</span>
+        <strong>@Model.CreatedAt.ToString("dd MMM yyyy")</strong>
+    </div>
+    <div class="detail-wide">
+        <span>Description</span>
+        <p>@Model.Description</p>
+    </div>
+    <div class="detail-wide">
+        <span>Recommendation</span>
+        <p>@Model.Recommendation</p>
+    </div>
+</section>
+
+<section class="cso-panel">
+    <h2>Remediation Timeline</h2>
+    @if (Model.Updates.Count == 0)
+    {
+        <div class="cso-empty-state">No remediation updates have been recorded yet.</div>
+    }
+    else
+    {
+        <ul class="timeline-list">
+            @foreach (var update in Model.Updates)
+            {
+                <li>@update</li>
+            }
+        </ul>
+    }
+</section>

@@ -8,5 +8,7 @@ public interface IAuditLogService
 
     Task<IReadOnlyList<AuditLogListItemViewModel>> GetRecentAsync(int count);
 
+    Task<AuditLogDetailsViewModel?> GetDetailsAsync(Guid id);
+
     Task RecordAsync(string action, string entityName, string entityId, string details, string? userId);
 }

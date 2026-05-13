@@ -1,4 +1,5 @@
 using CloudSecOps.Web.Services.Interfaces;
+using CloudSecOps.Web.ViewModels.Vulnerabilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +21,53 @@ public class VulnerabilitiesController : Controller
         return View(vulnerabilities);
     }
 
-    public IActionResult Details(Guid id) => View();
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var vulnerability = await _vulnerabilityService.GetDetailsAsync(id);
+        if (vulnerability == null)
+        {
+            return NotFound();
+        }
 
-    public IActionResult Create() => View();
+        return View(vulnerability);
+    }
 
-    public IActionResult Edit(Guid id) => View();
+    public IActionResult Create() => View(new VulnerabilityFormViewModel());
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(VulnerabilityFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        await _vulnerabilityService.CreateAsync(model);
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        var model = await _vulnerabilityService.GetFormAsync(id);
+        if (model == null)
+        {
+            return NotFound();
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Guid id, VulnerabilityFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        await _vulnerabilityService.UpdateAsync(id, model);
+        return RedirectToAction(nameof(Details), new { id });
+    }
 }

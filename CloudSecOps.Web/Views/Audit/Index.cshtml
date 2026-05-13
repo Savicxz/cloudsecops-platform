@@ -1,12 +1,70 @@
+@model CloudSecOps.Web.ViewModels.Audit.AuditDashboardViewModel
+
 @{
     ViewData["Title"] = "Audit";
 }
 
-<h1 class="h3">Auditor Workspace</h1>
-<p class="text-muted">Developer 4 owns audit logs, completed incident review, evidence review, and completed incident validation.</p>
+<section class="cso-page-header">
+    <div>
+        <h1>Auditor Workspace</h1>
+        <p>Read-only review for audit logs, evidence, and completed incidents.</p>
+    </div>
+</section>
 
-<div class="list-group">
-    <a class="list-group-item list-group-item-action" asp-controller="Audit" asp-action="CompletedIncidents">Completed incidents review placeholder</a>
-    <a class="list-group-item list-group-item-action" asp-controller="Audit" asp-action="EvidenceReview">Evidence review placeholder</a>
-    <a class="list-group-item list-group-item-action" asp-controller="AuditLogs" asp-action="Index">Audit logs placeholder</a>
-</div>
+<section class="metric-grid">
+    <article class="metric-card">
+        <span>Audit Logs</span>
+        <strong>@Model.AuditLogCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Completed Incidents</span>
+        <strong>@Model.CompletedIncidentCount</strong>
+    </article>
+    <article class="metric-card">
+        <span>Evidence Files</span>
+        <strong>@Model.EvidenceFileCount</strong>
+    </article>
+</section>
+
+<section class="role-card-grid">
+    <a class="cso-panel action-panel" asp-controller="AuditLogs" asp-action="Index">
+        <h2>Audit Logs</h2>
+        <p>Review immutable security history.</p>
+    </a>
+    <a class="cso-panel action-panel" asp-controller="Audit" asp-action="CompletedIncidents">
+        <h2>Completed Incidents</h2>
+        <p>Review closed incident records.</p>
+    </a>
+    <a class="cso-panel action-panel" asp-controller="Audit" asp-action="EvidenceReview">
+        <h2>Evidence Review</h2>
+        <p>Review linked evidence references.</p>
+    </a>
+</section>
+
+<section class="cso-panel">
+    <h2>Recent Audit Activity</h2>
+    <table class="cso-table">
+        <thead>
+            <tr><th>Action</th><th>Entity</th><th>User</th><th>Timestamp</th><th></th></tr>
+        </thead>
+        <tbody>
+            @if (Model.RecentAuditLogs.Count == 0)
+            {
+                <tr><td colspan="5"><div class="cso-empty-state">No audit entries have been recorded yet.</div></td></tr>
+            }
+            else
+            {
+                @foreach (var log in Model.RecentAuditLogs)
+                {
+                    <tr>
+                        <td>@log.Action</td>
+                        <td>@log.EntityName</td>
+                        <td>@log.UserName</td>
+                        <td>@log.Timestamp.ToString("u")</td>
+                        <td><a class="table-action" asp-controller="AuditLogs" asp-action="Details" asp-route-id="@log.Id">View</a></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>

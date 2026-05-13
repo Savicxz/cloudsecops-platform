@@ -34,6 +34,24 @@ public class AuditLogService : IAuditLogService
             .ToListAsync();
     }
 
+    public async Task<AuditLogDetailsViewModel?> GetDetailsAsync(Guid id)
+    {
+        return await _dbContext.AuditLogs
+            .AsNoTracking()
+            .Where(log => log.Id == id)
+            .Select(log => new AuditLogDetailsViewModel
+            {
+                Id = log.Id,
+                Action = log.Action,
+                EntityName = log.EntityName,
+                EntityId = log.EntityId,
+                Details = log.Details,
+                UserName = log.User != null ? log.User.FullName : "System",
+                Timestamp = log.Timestamp
+            })
+            .FirstOrDefaultAsync();
+    }
+
     public async Task RecordAsync(string action, string entityName, string entityId, string details, string? userId)
     {
         _dbContext.AuditLogs.Add(new AuditLog

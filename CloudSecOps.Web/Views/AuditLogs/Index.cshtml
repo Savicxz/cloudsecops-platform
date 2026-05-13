@@ -4,7 +4,36 @@
     ViewData["Title"] = "Audit Logs";
 }
 
-<h1 class="h3">Audit Logs</h1>
-<p class="text-muted">Read-only security history for administrative and auditor review.</p>
-@* TODO: Persist user actions and add filtering/export controls. *@
-<div class="card"><div class="card-body"><table class="table table-hover mb-0"><thead><tr><th>Action</th><th>Entity</th><th>User</th><th>Timestamp</th></tr></thead><tbody><tr><td colspan="4" class="text-muted">No audit entries yet. Placeholder list for Task 1.</td></tr></tbody></table></div></div>
+<div class="cso-page-header">
+    <div>
+        <h1>Audit Logs</h1>
+        <p>Read-only security history for auditor review.</p>
+    </div>
+</div>
+
+<section class="cso-panel">
+    <table class="cso-table">
+        <thead>
+            <tr><th>Action</th><th>Entity</th><th>User</th><th>Timestamp</th><th></th></tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr><td colspan="5"><div class="cso-empty-state">No audit entries have been recorded yet.</div></td></tr>
+            }
+            else
+            {
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td>@log.Action</td>
+                        <td>@log.EntityName</td>
+                        <td>@log.UserName</td>
+                        <td>@log.Timestamp.ToString("u")</td>
+                        <td><a class="table-action" asp-action="Details" asp-route-id="@log.Id">View</a></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>

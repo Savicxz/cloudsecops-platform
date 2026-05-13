@@ -1,6 +1,42 @@
+@model CloudSecOps.Web.ViewModels.AuditLogs.AuditLogDetailsViewModel
+
 @{
     ViewData["Title"] = "Audit Log Details";
 }
 
-<h1 class="h3">Audit Log Details</h1>
-<p class="text-muted">TODO: show immutable audit log details and related entity references.</p>
+<section class="cso-page-header">
+    <div>
+        <p>Auditor Workspace</p>
+        <h1>Audit Log Details</h1>
+        <span>Read-only immutable audit activity details.</span>
+    </div>
+
+    <a class="btn-ghost" asp-controller="AuditLogs" asp-action="Index">Back to Audit Logs</a>
+</section>
+
+<section class="cso-panel detail-grid">
+    <div>
+        <span>Action</span>
+        <strong>@Model.Action</strong>
+    </div>
+    <div>
+        <span>Entity</span>
+        <strong>@Model.EntityName</strong>
+    </div>
+    <div>
+        <span>Entity ID</span>
+        <strong>@Model.EntityId</strong>
+    </div>
+    <div>
+        <span>User</span>
+        <strong>@Model.UserName</strong>
+    </div>
+    <div>
+        <span>Timestamp</span>
+        <strong>@Model.Timestamp.ToString("u")</strong>
+    </div>
+    <div class="detail-wide">
+        <span>Details</span>
+        <p>@Model.Details</p>
+    </div>
+</section>
