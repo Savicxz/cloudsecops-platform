@@ -1,3 +1,29 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var isPublicShell = string.Equals(controller, "Home", StringComparison.OrdinalIgnoreCase)
+        || (string.Equals(controller, "Account", StringComparison.OrdinalIgnoreCase)
+            && string.Equals(action, "Login", StringComparison.OrdinalIgnoreCase));
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var userName = User.Identity?.Name ?? "Operator";
+    var userInitials = string.Join("", userName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(part => part[0])).ToUpperInvariant();
+    if (string.IsNullOrWhiteSpace(userInitials))
+    {
+        userInitials = "JD";
+    }
+
+    var isAdministrator = User.IsInRole("Administrator");
+    var isSecurityAnalyst = User.IsInRole("SecurityAnalyst");
+    var isReporter = User.IsInRole("Reporter");
+    var isManager = User.IsInRole("Manager");
+    var isAuditor = User.IsInRole("Auditor");
+
+    bool IsActive(string targetController, string? targetAction = null)
+    {
+        return string.Equals(controller, targetController, StringComparison.OrdinalIgnoreCase)
+            && (targetAction == null || string.Equals(action, targetAction, StringComparison.OrdinalIgnoreCase));
+    }
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,79 +35,127 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CloudSecOps.Web.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary mb-4">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-semibold" asp-area="" asp-controller="Home" asp-action="Index">CloudSecOps</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (User.IsInRole("SecurityAnalyst"))
-                        {
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Analyst" asp-action="Index">Analyst</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Incidents" asp-action="Index">Incidents</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Assets" asp-action="Index">Assets</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Vulnerabilities" asp-action="Index">Vulnerabilities</a></li>
-                        }
-                        @if (User.IsInRole("Administrator"))
-                        {
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a></li>
-                        }
-                        @if (User.IsInRole("Reporter"))
-                        {
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Reporter" asp-action="Index">Reporter</a></li>
-                        }
-                        @if (User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Manager" asp-action="Index">Manager</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-                        }
-                        @if (User.IsInRole("Auditor"))
-                        {
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Audit" asp-action="Index">Audit</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="AuditLogs" asp-action="Index">Audit Logs</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="EvidenceFiles" asp-action="Index">Evidence Files</a></li>
-                        }
-                    </ul>
-                    <ul class="navbar-nav">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <span class="navbar-text me-3">@User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn btn-outline-light btn-sm">Sign out</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Login">Sign in</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+<body class="@(isPublicShell ? "landing-shell" : "app-shell")">
+    @if (isPublicShell)
+    {
+        <header class="landing-nav">
+            <a class="brand-mark" asp-controller="Home" asp-action="Index">
+                <span class="brand-shield">CS</span>
+                <span>CloudSecOps</span>
+            </a>
+            <nav class="landing-nav-links" aria-label="Landing navigation">
+                <a href="/#technology">Technology</a>
+                <a href="/#governance">Governance</a>
+            </nav>
+            <a class="btn-ghost" asp-controller="Account" asp-action="Login">Sign In</a>
+        </header>
+        <main role="main">
             @RenderBody()
         </main>
-    </div>
+    }
+    else
+    {
+        <div class="workspace">
+            <aside class="workspace-sidebar">
+                <a class="workspace-brand" asp-controller="Home" asp-action="Index">
+                    <span class="brand-shield">CS</span>
+                    <span>CloudSecOps</span>
+                </a>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - CloudSecOps - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <nav class="workspace-nav" aria-label="Workspace navigation">
+                    @if (isSecurityAnalyst || isManager)
+                    {
+                        <p class="nav-kicker">Operational Hub</p>
+                        <a class="workspace-link @(IsActive("Dashboard") ? "active" : "")" asp-controller="Dashboard" asp-action="Index"><span>OV</span>Overview</a>
+                    }
+
+                    @if (isSecurityAnalyst)
+                    {
+                        <a class="workspace-link @(IsActive("Incidents") ? "active" : "")" asp-controller="Incidents" asp-action="Index"><span>IN</span>Incidents</a>
+                        <a class="workspace-link @(IsActive("Assets") ? "active" : "")" asp-controller="Assets" asp-action="Index"><span>AS</span>Assets</a>
+                        <a class="workspace-link @(IsActive("Vulnerabilities") ? "active" : "")" asp-controller="Vulnerabilities" asp-action="Index"><span>VU</span>Vulnerabilities</a>
+                        <p class="nav-kicker">Role Workspace</p>
+                        <a class="workspace-link @(IsActive("Analyst") ? "active" : "")" asp-controller="Analyst" asp-action="Index"><span>SA</span>Analyst</a>
+                    }
+
+                    @if (isAdministrator)
+                    {
+                        <p class="nav-kicker">Administration</p>
+                        <a class="workspace-link @(IsActive("Admin", "Index") ? "active" : "")" asp-controller="Admin" asp-action="Index"><span>AD</span>Admin</a>
+                        <a class="workspace-link @(IsActive("Admin", "Users") ? "active" : "")" asp-controller="Admin" asp-action="Users"><span>UR</span>Users</a>
+                        <a class="workspace-link @(IsActive("Admin", "SystemStatus") ? "active" : "")" asp-controller="Admin" asp-action="SystemStatus"><span>SS</span>System Status</a>
+                    }
+
+                    @if (isReporter)
+                    {
+                        <p class="nav-kicker">Reporter</p>
+                        <a class="workspace-link @(IsActive("Reporter", "Index") ? "active" : "")" asp-controller="Reporter" asp-action="Index"><span>RD</span>Dashboard</a>
+                        <a class="workspace-link @(IsActive("Reporter", "SubmitReport") || IsActive("IncidentReports", "Create") ? "active" : "")" asp-controller="Reporter" asp-action="SubmitReport"><span>SR</span>Submit Report</a>
+                        <a class="workspace-link @(IsActive("Reporter", "MyReports") || IsActive("IncidentReports", "Index") ? "active" : "")" asp-controller="Reporter" asp-action="MyReports"><span>MR</span>My Reports</a>
+                    }
+
+                    @if (isManager)
+                    {
+                        <p class="nav-kicker">Manager</p>
+                        <a class="workspace-link @(IsActive("Manager", "Index") ? "active" : "")" asp-controller="Manager" asp-action="Index"><span>MD</span>Dashboard</a>
+                        <a class="workspace-link @(IsActive("Manager", "AssignAnalyst") ? "active" : "")" asp-controller="Manager" asp-action="AssignAnalyst"><span>AA</span>Assign Analyst</a>
+                        <a class="workspace-link @(IsActive("Manager", "IncidentProgress") ? "active" : "")" asp-controller="Manager" asp-action="IncidentProgress"><span>IP</span>Incident Progress</a>
+                    }
+
+                    @if (isAuditor)
+                    {
+                        <p class="nav-kicker">Governance</p>
+                        <a class="workspace-link @(IsActive("Audit", "Index") ? "active" : "")" asp-controller="Audit" asp-action="Index"><span>AU</span>Audit</a>
+                        <a class="workspace-link @(IsActive("AuditLogs") ? "active" : "")" asp-controller="AuditLogs" asp-action="Index"><span>LG</span>Audit Logs</a>
+                        <a class="workspace-link @(IsActive("Audit", "EvidenceReview") || IsActive("EvidenceFiles") ? "active" : "")" asp-controller="Audit" asp-action="EvidenceReview"><span>EV</span>Evidence</a>
+                        <a class="workspace-link @(IsActive("Audit", "CompletedIncidents") ? "active" : "")" asp-controller="Audit" asp-action="CompletedIncidents"><span>CI</span>Completed</a>
+                    }
+                </nav>
+
+                <div class="operator-card">
+                    <span class="operator-avatar">@userInitials</span>
+                    @if (isAuthenticated)
+                    {
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit">Sign Out</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login">Sign In</a>
+                    }
+                    <span class="operator-gear">SEC</span>
+                </div>
+            </aside>
+
+            <main class="workspace-main" role="main">
+                <header class="workspace-topbar">
+                    <div>
+                        <p class="workspace-eyebrow">CloudSecOps Command</p>
+                        <h1>@(ViewData["PageHeading"] ?? ViewData["Title"])</h1>
+                    </div>
+                    <div class="workspace-actions">
+                        <label class="search-box" aria-label="Search resources">
+                            <span>SR</span>
+                            <input type="search" placeholder="Search resources..." />
+                        </label>
+                        @if (isSecurityAnalyst)
+                        {
+                            <a class="btn-primary-app" asp-controller="Incidents" asp-action="Create">New Incident</a>
+                        }
+                        else if (isReporter)
+                        {
+                            <a class="btn-primary-app" asp-controller="Reporter" asp-action="SubmitReport">New Report</a>
+                        }
+                        <span class="alert-dot" aria-label="Notifications"></span>
+                    </div>
+                </header>
+
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

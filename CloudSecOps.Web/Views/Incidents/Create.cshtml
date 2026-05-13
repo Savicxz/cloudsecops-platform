@@ -1,7 +1,54 @@
+@model CloudSecOps.Web.ViewModels.Incidents.IncidentFormViewModel
+@using CloudSecOps.Web.Models.Enums
+
 @{
     ViewData["Title"] = "Report Incident";
 }
 
-<h1 class="h3">Report Incident</h1>
-<p class="text-muted">TODO: create a defensive incident intake form without offensive tooling.</p>
-<div class="card"><div class="card-body"><button class="btn btn-primary" disabled>Submit Incident</button></div></div>
+<section class="cso-page-header">
+    <div>
+        <p>Operational Hub</p>
+        <h1>Report Incident</h1>
+        <span>Create an internal incident record for analyst triage and status tracking.</span>
+    </div>
+    <a class="btn-ghost" asp-action="Index">Back to Incidents</a>
+</section>
+
+<section class="cso-panel cso-form">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" placeholder="Example: Suspicious privileged login" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Summarize what happened, affected systems, and observed indicators"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Category" class="form-label"></label>
+            <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<IncidentCategory>()"></select>
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Severity" class="form-label"></label>
+            <select asp-for="Severity" class="form-select" asp-items="Html.GetEnumSelectList<SeverityLevel>()"></select>
+            <span asp-validation-for="Severity" class="text-danger"></span>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary-app" type="submit">Submit Incident</button>
+            <a asp-action="Index" class="btn-ghost">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

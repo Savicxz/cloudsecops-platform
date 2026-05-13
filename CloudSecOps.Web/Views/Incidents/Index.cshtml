@@ -4,51 +4,51 @@
     ViewData["Title"] = "Incidents";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<section class="cso-page-header">
     <div>
-        <h1 class="h3 mb-1">Incidents</h1>
-        <p class="text-muted mb-0">Coordinate defensive incident reporting, triage, assignment, and closure.</p>
+        <p>Operational Hub</p>
+        <h1>Incidents</h1>
+        <span>Coordinate defensive incident reporting, triage, assignment, and closure.</span>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Report Incident</a>
-</div>
+    <a class="btn-primary-app" asp-action="Create">Report Incident</a>
+</section>
 
-<div class="card">
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead>
+<section class="cso-panel">
+    <table class="cso-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
                 <tr>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Severity</th>
-                    <th>Status</th>
-                    <th>Created</th>
-                    <th></th>
+                    <td colspan="6"><div class="cso-empty-state">No incidents have been recorded yet.</div></td>
                 </tr>
-            </thead>
-            <tbody>
-                @if (Model.Count == 0)
+            }
+            else
+            {
+                @foreach (var incident in Model)
                 {
                     <tr>
-                        <td colspan="6" class="text-muted">No incidents yet. Placeholder list for Task 1.</td>
+                        <td>@incident.Title</td>
+                        <td>@incident.Category</td>
+                        <td><span class="risk-pill @incident.Severity.ToString().ToLowerInvariant()">@incident.Severity</span></td>
+                        <td><span class="status-pill">@incident.Status</span></td>
+                        <td>@incident.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td>
+                            <a class="table-action" asp-action="Details" asp-route-id="@incident.Id">View</a>
+                            <a class="table-action" asp-action="Edit" asp-route-id="@incident.Id">Edit</a>
+                        </td>
                     </tr>
                 }
-                else
-                {
-                    @foreach (var incident in Model)
-                    {
-                        <tr>
-                            <td>@incident.Title</td>
-                            <td>@incident.Category</td>
-                            <td>@incident.Severity</td>
-                            <td>@incident.Status</td>
-                            <td>@incident.CreatedAt.ToString("dd MMM yyyy")</td>
-                            <td>
-                                <a asp-controller="Analyst" asp-action="IncidentDetails" asp-route-id="@incident.Id">Review</a>
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+            }
+        </tbody>
+    </table>
+</section>

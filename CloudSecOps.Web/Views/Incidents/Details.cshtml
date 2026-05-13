@@ -4,21 +4,59 @@
     ViewData["Title"] = "Incident Details";
 }
 
-<div class="d-flex justify-content-between align-items-start mb-4">
+<section class="cso-page-header">
     <div>
-        <h1 class="h3 mb-1">@Model.Title</h1>
-        <p class="text-muted mb-0">Incident details for Security Analyst review.</p>
+        <p>Operational Hub</p>
+        <h1>@Model.Title</h1>
+        <span>Incident details for Security Analyst review.</span>
     </div>
-    <a class="btn btn-outline-secondary" asp-action="Index">Back to Incidents</a>
-</div>
+    <a class="btn-ghost" asp-action="Index">Back to Incidents</a>
+</section>
 
-<div class="card">
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-2">Status</dt>
-            <dd class="col-sm-10">@Model.Status</dd>
-            <dt class="col-sm-2">Description</dt>
-            <dd class="col-sm-10">@Model.Description</dd>
-        </dl>
+<section class="cso-panel detail-grid">
+    <div>
+        <span>Status</span>
+        <strong><span class="status-pill">@Model.Status</span></strong>
     </div>
-</div>
+    <div>
+        <span>Category</span>
+        <strong>@Model.Category</strong>
+    </div>
+    <div>
+        <span>Severity</span>
+        <strong><span class="risk-pill @Model.Severity.ToString().ToLowerInvariant()">@Model.Severity</span></strong>
+    </div>
+    <div>
+        <span>Asset</span>
+        <strong>@Model.RelatedAssetName</strong>
+    </div>
+    <div>
+        <span>Assigned To</span>
+        <strong>@Model.AssignedToName</strong>
+    </div>
+    <div>
+        <span>Created</span>
+        <strong>@Model.CreatedAt.ToString("dd MMM yyyy hh:mm tt")</strong>
+    </div>
+    <div class="detail-wide">
+        <span>Description</span>
+        <p>@Model.Description</p>
+    </div>
+</section>
+
+<section class="cso-panel">
+    <h2>Investigation Timeline</h2>
+    @if (Model.Updates.Count == 0)
+    {
+        <div class="cso-empty-state">No analyst updates have been recorded yet.</div>
+    }
+    else
+    {
+        <ul class="timeline-list">
+            @foreach (var update in Model.Updates)
+            {
+                <li>@update</li>
+            }
+        </ul>
+    }
+</section>

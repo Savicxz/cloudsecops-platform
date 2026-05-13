@@ -1,4 +1,5 @@
 using CloudSecOps.Web.Services.Interfaces;
+using CloudSecOps.Web.ViewModels.Incidents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,42 @@ public class IncidentsController : Controller
         return View(incident);
     }
 
-    public IActionResult Create() => View();
+    public IActionResult Create() => View(new IncidentFormViewModel());
 
-    public IActionResult Edit(Guid id) => View();
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(IncidentFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        await _incidentService.CreateAsync(model);
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        var model = await _incidentService.GetFormAsync(id);
+        if (model == null)
+        {
+            return NotFound();
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Guid id, IncidentFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        await _incidentService.UpdateAsync(id, model);
+        return RedirectToAction(nameof(Details), new { id });
+    }
 }

@@ -96,6 +96,22 @@ public class IncidentService : IIncidentService
             .FirstOrDefaultAsync();
     }
 
+    public async Task<IncidentFormViewModel?> GetFormAsync(Guid id)
+    {
+        return await _dbContext.Incidents
+            .AsNoTracking()
+            .Where(incident => incident.Id == id)
+            .Select(incident => new IncidentFormViewModel
+            {
+                Title = incident.Title,
+                Description = incident.Description,
+                Category = incident.Category,
+                Severity = incident.Severity,
+                RelatedAssetId = incident.RelatedAssetId
+            })
+            .FirstOrDefaultAsync();
+    }
+
     public Task CreateAsync(IncidentFormViewModel model)
     {
         var incident = new Incident

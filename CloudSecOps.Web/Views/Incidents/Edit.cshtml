@@ -1,7 +1,52 @@
+@model CloudSecOps.Web.ViewModels.Incidents.IncidentFormViewModel
+@using CloudSecOps.Web.Models.Enums
+
 @{
     ViewData["Title"] = "Edit Incident";
 }
 
-<h1 class="h3">Edit Incident</h1>
-<p class="text-muted">TODO: implement analyst/manager workflow updates and audit logging.</p>
-<div class="card"><div class="card-body"><button class="btn btn-primary" disabled>Update Incident</button></div></div>
+<section class="cso-page-header">
+    <div>
+        <p>Operational Hub</p>
+        <h1>Edit Incident</h1>
+        <span>Refine incident classification and triage details.</span>
+    </div>
+    <a class="btn-ghost" asp-action="Index">Back to Incidents</a>
+</section>
+
+<section class="cso-panel cso-form">
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Category" class="form-label"></label>
+            <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<IncidentCategory>()"></select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Severity" class="form-label"></label>
+            <select asp-for="Severity" class="form-select" asp-items="Html.GetEnumSelectList<SeverityLevel>()"></select>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary-app" type="submit">Update Incident</button>
+            <a asp-action="Index" class="btn-ghost">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

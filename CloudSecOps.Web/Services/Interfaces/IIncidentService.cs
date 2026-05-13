@@ -21,6 +21,8 @@ public interface IIncidentService
 
     Task<IncidentDetailsViewModel?> GetDetailsAsync(Guid id);
 
+    Task<IncidentFormViewModel?> GetFormAsync(Guid id);
+
     Task CreateAsync(IncidentFormViewModel model);
 
     Task UpdateAsync(Guid id, IncidentFormViewModel model);
