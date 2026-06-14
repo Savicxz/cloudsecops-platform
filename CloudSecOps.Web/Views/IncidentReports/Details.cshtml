@@ -11,9 +11,14 @@
         <span>Review the information submitted for this incident.</span>
     </div>
 
-    <a asp-controller="IncidentReports" asp-action="Index" class="btn-ghost">
-        Back to My Reports
-    </a>
+    @if (User.IsInRole("Manager"))
+    {
+        <a asp-controller="Manager" asp-action="Index" class="btn-ghost">Back to Manager Dashboard</a>
+    }
+    else
+    {
+        <a asp-controller="IncidentReports" asp-action="Index" class="btn-ghost">Back to My Reports</a>
+    }
 </section>
 
 @if (TempData["StatusMessage"] is string statusMessage)
@@ -56,6 +61,21 @@
         <span>Submitted</span>
         <strong>@(Model.SubmittedAt?.ToString("dd MMM yyyy hh:mm tt") ?? "Not submitted")</strong>
     </div>
+    <div>
+        <span>Assigned Analyst</span>
+        <strong>@(Model.AssignedAnalyst ?? "Not assigned")</strong>
+    </div>
+    <div>
+        <span>Assigned</span>
+        <strong>@(Model.AssignedAt?.ToString("dd MMM yyyy hh:mm tt") ?? "Not assigned")</strong>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.ManagerNote))
+    {
+        <div class="detail-wide">
+            <span>Manager Note</span>
+            <p>@Model.ManagerNote</p>
+        </div>
+    }
     <div class="detail-wide">
         <span>Description</span>
         <p>@Model.Description</p>
