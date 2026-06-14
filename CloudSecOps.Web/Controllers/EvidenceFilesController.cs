@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CloudSecOps.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Auditor")]
 public class EvidenceFilesController : Controller
 {
     private readonly IEvidenceFileService _evidenceFileService;

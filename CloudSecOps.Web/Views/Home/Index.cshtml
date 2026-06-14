@@ -2,11 +2,66 @@
     ViewData["Title"] = "Home";
 }
 
-<section class="p-4 p-md-5 bg-light border rounded-3">
-    <p class="text-uppercase text-secondary fw-semibold small mb-2">Defensive security operations</p>
-    <h1 class="display-6 fw-bold">CloudSecOps: Cloud-Based Security Operations and Incident Response Platform</h1>
-    <p class="lead mb-4">
-        A Task 1 ASP.NET Core MVC skeleton for incident response, vulnerability tracking, asset inventory, evidence files, audit logs, and role-based dashboards.
+<section class="landing-hero">
+    <p class="hero-pill">Defensive Cloud Intelligence</p>
+    <h1>Secure what matters. Operate with confidence.</h1>
+    <p class="hero-copy">
+        A high-fidelity workspace for incident response, vulnerabilities, and assets.
+        Built for security teams who need clarity, speed, and audit-ready reporting.
     </p>
-    <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Open Dashboard</a>
+    <div class="hero-actions">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            if (User.IsInRole("Administrator"))
+            {
+                <a class="btn-primary-app" asp-controller="Admin" asp-action="Index">Explore Platform</a>
+            }
+            else if (User.IsInRole("Reporter"))
+            {
+                <a class="btn-primary-app" asp-controller="Reporter" asp-action="Index">Explore Platform</a>
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                <a class="btn-primary-app" asp-controller="Manager" asp-action="Index">Explore Platform</a>
+            }
+            else if (User.IsInRole("Auditor"))
+            {
+                <a class="btn-primary-app" asp-controller="Audit" asp-action="Index">Explore Platform</a>
+            }
+            else
+            {
+                <a class="btn-primary-app" asp-controller="Dashboard" asp-action="Index">Explore Platform</a>
+            }
+        }
+        else
+        {
+            <a class="btn-primary-app" asp-controller="Account" asp-action="Login">Explore Platform</a>
+        }
+        <a class="btn-ghost" href="#governance">Request Demo</a>
+    </div>
+</section>
+
+<section class="landing-grid" id="technology">
+    <article class="landing-card landing-card-large">
+        <h2>SOC Operations</h2>
+        <p>Unified incident queue with triage-ready investigation tools.</p>
+        <div class="terminal-panel">
+            <span>[SYSTEM] Initializing CloudSecOps Core...</span>
+            <span>[ACTIVE] Monitoring protected cloud resources</span>
+            <span>[READY] Guardrails Operational: 100%</span>
+        </div>
+    </article>
+
+    <div class="landing-stack" id="governance">
+        <article class="landing-card landing-card-risk">
+            <h2>Real-time Risk</h2>
+            <p>Identify critical vulnerabilities across assets instantly.</p>
+            <strong>14 High Risk</strong>
+        </article>
+        <article class="landing-card">
+            <h2>Audit Ready</h2>
+            <p>Immutable logging and reporting for compliance review.</p>
+            <span class="check-token">✓</span>
+        </article>
+    </div>
 </section>
