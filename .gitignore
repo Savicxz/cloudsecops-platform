@@ -12,6 +12,7 @@ artifacts/
 *.suo
 *.userosscache
 *.sln.docstates
+*.lscache
 
 # Logs
 *.log

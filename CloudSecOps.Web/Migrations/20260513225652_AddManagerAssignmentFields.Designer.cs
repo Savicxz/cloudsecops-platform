@@ -3,6 +3,7 @@ using System;
 using CloudSecOps.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CloudSecOps.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260513225652_AddManagerAssignmentFields")]
+    partial class AddManagerAssignmentFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,6 +286,7 @@ namespace CloudSecOps.Web.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
                     b.Property<string>("AssignedAnalyst")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -301,6 +305,7 @@ namespace CloudSecOps.Web.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
+
                     b.Property<string>("ManagerNote")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
